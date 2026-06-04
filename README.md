@@ -103,7 +103,7 @@ XL-lite/
 
 ```bash
 # 克隆仓库
-git clone <repository-url>
+git clone https://github.com/LU-xiao-liang/XL-lite.git
 cd XL-lite
 
 # 安装所有依赖
