@@ -8,24 +8,14 @@ import 'primeicons/primeicons.css'
 
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
-import Aura from '@primevue/themes/Aura'
 import ConfirmationService from 'primevue/confirmationservice'
 
 import App from './App.vue'
 import router from './router'
-import { definePreset } from '@primevue/themes'
+import { theme } from '@/design-system/theme'
 
 const app = createApp(App)
 
-const theme = definePreset(Aura, {
-  components: {
-    breadcrumb: {
-      root: {
-        padding: '0.5rem 1rem',
-      },
-    },
-  },
-})
 app.use(createPinia())
 
 const themeStore = useThemeStore()
