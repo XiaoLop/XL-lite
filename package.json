@@ -1,0 +1,16 @@
+{
+  "name": "xl-lite",
+  "version": "1.0.0",
+  "description": "XL-lite 后台管理系统 - 基于 Vue3 + NestJS 的全栈后台管理解决方案，包含 RBAC 权限管理、用户角色菜单管理等功能模块",
+  "main": "index.js",
+  "scripts": {
+    "dev:server": "pnpm --filter app-server start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}

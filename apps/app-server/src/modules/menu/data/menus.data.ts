@@ -1,0 +1,50 @@
+import { MenuType } from '../types/menu.type';
+export default [
+    {
+        path: 'dashboard',
+        component: '/Dashboard/index.vue',
+        name: 'Dashboard',
+        icon: 'home',
+        sort: 0,
+        parent_id: 0,
+        permission_code: 'menu:dashboard',
+        type: MenuType.MENU,
+    },
+    {
+        name: '系统管理',
+        icon: 'cog',
+        path: 'system',
+        sort: 1,
+        parent_id: 0,
+        type: MenuType.DIRECT,
+        children: [
+            {
+                path: 'menu',
+                component: '/System/Menu/index.vue',
+                name: '菜单管理',
+                icon: 'home',
+                sort: 0,
+                permission_code: 'system:menu',
+                type: MenuType.MENU,
+            },
+            {
+                path: 'user',
+                component: '/System/User/index.vue',
+                name: '用户管理',
+                icon: 'user',
+                sort: 1,
+                permission_code: 'system:user',
+                type: MenuType.MENU,
+            },
+            {
+                path: 'role',
+                component: '/System/Role/index.vue',
+                name: '角色管理',
+                icon: 'users',
+                sort: 2,
+                permission_code: 'system:role',
+                type: MenuType.MENU,
+            },
+        ],
+    },
+];

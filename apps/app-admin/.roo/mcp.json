@@ -1,0 +1,26 @@
+{
+	"mcpServers": {
+		"API 文档": {
+			"command": "cmd",
+			"args": [
+				"/c",
+				"npx",
+				"-y",
+				"apifox-mcp-server@latest",
+				"--oas=http://localhost:3000/doc/json"
+			],
+			"alwaysAllow": [
+				"read_project_oas_lt8l1j",
+				"read_project_oas_ref_resources_lt8l1j",
+				"read_project_oas_2e1wtw",
+				"read_project_oas_ref_resources_2e1wtw",
+				"read_project_oas_vnux98",
+				"read_project_oas_ref_resources_vnux98",
+				"refresh_project_oas_vnux98",
+				"read_project_oas_a8xkwa",
+				"read_project_oas_ref_resources_a8xkwa",
+				"refresh_project_oas_a8xkwa"
+			]
+		}
+	}
+}
