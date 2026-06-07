@@ -1,3 +1,5 @@
+# Nest.js 模块化开发
+
 ## 一、模块（Module）—— 组织边界
 
 模块是 Nest 的**组织单位**与**依赖边界**。每个应用至少有一个根模块 `AppModule`。
@@ -1026,8 +1028,8 @@ src/
 - **Repository/Entity 层**：负责数据持久化（使用TypeORM）。
 - **DTO 层**：定义数据输入和输出的结构，并使用 `class-validator` 进行验证。
 
-6. **`shared/`**：用于导出那些需要被多个模块共享，但又不像 `common/` 那样是全局的“基础设施”组件。例如，一个 `UserService` 可能需要被 `AuthModule` 和 `OrderModule` 使用，那么可以通过 `SharedModule` 导出它，其他模块再导入 `SharedModule`。这有助于避免循环依赖。
-7. **`database/`**：管理与数据库版本控制和初始化相关的脚本，如迁移文件（migrations）和种子数据（seeds）。这对于生产环境的数据库变更至关重要。
+1. **`shared/`**：用于导出那些需要被多个模块共享，但又不像 `common/` 那样是全局的“基础设施”组件。例如，一个 `UserService` 可能需要被 `AuthModule` 和 `OrderModule` 使用，那么可以通过 `SharedModule` 导出它，其他模块再导入 `SharedModule`。这有助于避免循环依赖。
+2. **`database/`**：管理与数据库版本控制和初始化相关的脚本，如迁移文件（migrations）和种子数据（seeds）。这对于生产环境的数据库变更至关重要。
 
 ### 结构优势
 
