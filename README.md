@@ -30,7 +30,6 @@ XL-lite 是一款轻量级、模块化的全栈后台管理系统，基于 **Vue
 | [BullMQ](https://docs.bullmq.io/) | 基于 Redis 的任务队列 |
 | [JWT](https://jwt.io/) / [Passport](http://www.passportjs.org/) | 身份认证与鉴权 |
 | [Swagger](https://swagger.io/) | API 文档自动生成 |
-| [Playwright](https://playwright.dev/) | 端到端测试 |
 | [Jest](https://jestjs.io/) | 单元测试框架 |
 
 ---

@@ -31,9 +31,6 @@ declare global {
             // 端口配置
             PORT: string;
 
-            // playwright 配置
-            PLAYWRIGHT_WS_CONNECTION: string;
-
             // 环境配置
             NODE_ENV: 'development' | 'production' | 'test';
 
