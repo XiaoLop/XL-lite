@@ -19,6 +19,7 @@ const app = createApp(App)
 app.use(createPinia())
 
 const themeStore = useThemeStore()
+// 动态路由
 await themeStore.loadDynamicRoutes(router)
 
 app.use(router)

@@ -88,10 +88,11 @@ export const useThemeStore = defineStore('theme', () => {
   // 加载动态路由
   const loadDynamicRoutes = async (router: Router) => {
     try {
-      if (localStorage.getItem('access_token')) {
-        await getMenuList()
 
-        const menus = menuList.value
+      if (localStorage.getItem('access_token')) {
+        await getMenuList() // 获取菜单列表
+
+        const menus = menuList.value.sort((a, b) => a.sort - b.sort)
 
         menus.forEach((item) => {
           // 判断 item.component 是否在 views 中
