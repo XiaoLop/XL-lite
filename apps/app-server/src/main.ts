@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExecptionFilter } from './common/filters/http-execption.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import cookieParser from 'cookie-parser';
+import { Logger } from '@nestjs/common';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix('api'); // 设置全局路由前缀
@@ -24,6 +25,8 @@ async function bootstrap() {
         SwaggerModule.setup('/doc', app, documentFactory, {
             jsonDocumentUrl: '/doc/json',
         }); // 设置路由前缀
+        const logger = new Logger('Bootstrap');
+        logger.log(`接口文档地址：http://localhost:${process.env.PORT}/doc`);
     }
 
     await app.listen(process.env.PORT ?? 3000);

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
@@ -64,7 +63,6 @@ import { SeedModule } from './seed/seed.module';
     ],
     controllers: [AppController],
     providers: [
-        AppService,
         AuthGuard,
         PermissionGuard,
         {
