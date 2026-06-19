@@ -1,11 +1,8 @@
 <template>
   <div class="w-full h-full flex bg-surface-100 p-2">
-    <div
-      class="group transition-all duration-300 ease-in-out mr-2 shrink-0"
-      :class="themeStore.expand ? 'w-64' : 'w-16'"
-    >
+    <aside class="w-60 px-4">
       <Sidebar :menuList="themeStore.menuList"></Sidebar>
-    </div>
+    </aside>
     <div class="flex-1 flex flex-col min-w-0">
       <div class="shrink-0">
         <Header></Header>
