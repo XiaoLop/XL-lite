@@ -46,19 +46,15 @@ export class AuthGuard implements CanActivate {
                         throw new HttpException(
                             {
                                 message: 'accessToken expired',
-                                data: {
-                                    code: 10001,
-                                },
+                                data: null,
                             },
                             HttpStatus.UNAUTHORIZED,
                         );
                     case 'invalid token':
                         throw new HttpException(
                             {
-                                message: 'invalid token',
-                                data: {
-                                    code: 10002,
-                                },
+                                message: 'invalid accessToken',
+                                data: null,
                             },
                             HttpStatus.UNAUTHORIZED,
                         );

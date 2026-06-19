@@ -24,8 +24,6 @@ declare global {
 
             // JWT配置
             JWT_ACCESS_SECRET: string;
-            JWT_REFRESH_SECRET: string;
-            JWT_REFRESH_EXPIRATION: string;
             JWT_ACCESS_EXPIRATION: string;
 
             // 端口配置

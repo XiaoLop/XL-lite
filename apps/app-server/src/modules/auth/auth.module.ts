@@ -6,7 +6,6 @@ import { CaptchaModule } from 'modules/captcha/captcha.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 
 @Module({
     imports: [
@@ -16,7 +15,7 @@ import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
         JwtModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, RefreshJwtStrategy],
+    providers: [AuthService, JwtStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}
