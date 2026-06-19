@@ -20,7 +20,8 @@
     "@vben/stylelint-config": "workspace:*",
     "@vben/tailwind-config": "workspace:*",
     "@vben/tsconfig": "workspace:*",
-    "@vben/vite-config": "workspace:*"
+    "@vben/vite-config": "workspace:*",
+    "vite": "catalog:"
   },
   "packageManager": "pnpm@10.13.1"
 }
