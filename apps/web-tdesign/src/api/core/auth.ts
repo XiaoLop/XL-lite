@@ -14,11 +14,6 @@ export namespace AuthApi {
     accessToken: string;
   }
 
-  export interface RefreshTokenResult {
-    data: string;
-    status: number;
-  }
-
   /** 验证码返回值 */
   export interface CaptchaResult {
     captchaId: string;
@@ -45,9 +40,10 @@ export async function getCaptchaApi() {
  * 刷新accessToken
  */
 export async function refreshTokenApi() {
-  return baseRequestClient.post<ApiResponse<AuthApi.RefreshTokenResult>>('/auth/refresh', {
+  const res = await baseRequestClient.post<ApiResponse<string>>('/auth/refresh', {
     withCredentials: true,
   });
+  return res.data
 }
 
 /**
@@ -63,7 +59,5 @@ export async function logoutApi() {
  * 获取用户权限码
  */
 export async function getAccessCodesApi() {
-  const res = requestClient.get<string[]>('/auth/codes');
-  console.log(res);
-  return res;
+  return requestClient.get<string[]>('/auth/codes');
 }

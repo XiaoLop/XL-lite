@@ -24,6 +24,18 @@ export class User {
     @Column()
     email!: string;
 
+    @Column({ nullable: true })
+    avatar?: string;
+
+    @Column({ nullable: true })
+    realName?: string;
+
+    @Column({ type: 'text', nullable: true })
+    desc?: string;
+
+    @Column({ nullable: true })
+    homePath?: string;
+
     @Column({
         default: UserStatus.Active,
     })

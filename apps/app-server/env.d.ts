@@ -23,6 +23,8 @@ declare global {
             REDIS_PASSWORD: string;
 
             // JWT配置
+            JWT_REFRESH_SECRET: string;
+            JWT_REFRESH_EXPIRATION: string;
             JWT_ACCESS_SECRET: string;
             JWT_ACCESS_EXPIRATION: string;
 

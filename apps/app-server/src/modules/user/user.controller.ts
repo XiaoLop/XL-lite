@@ -11,13 +11,13 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import type { User } from './entities/user.entity';
 import { ApiResult } from 'common/decorators/api-result.decorator';
 import { UserInfoDto } from './dto/user-info.dto';
 import { ApiOperation } from '@nestjs/swagger';
+import type { AccessJwtPayload } from 'modules/auth/types/auth.type';
 
 interface RequestWithUser extends Request {
-    user: User;
+    user: AccessJwtPayload;
 }
 
 @Controller('user')
@@ -32,8 +32,8 @@ export class UserController {
     @ApiResult({
         type: UserInfoDto,
     })
-    async getUserInfo(@Req() req: RequestWithUser) {
-        return await this.userService.getUserInfo(req.user);
+    async getUserInfo(@Req() req: RequestWithUser): Promise<UserInfoDto> {
+        return await this.userService.getUserInfo(req.user.sub);
     }
 
     @Post()

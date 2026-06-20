@@ -24,17 +24,15 @@ export class PermissionService {
     // 创建超级管理员权限
     async createSuperAdmin() {
         // 判断超级管理员权限是否存在
-        const existingPermission = await this.findOneByCode(
-            process.env.SUPER_ADMIN_CODE,
-        );
+        const existingPermission = await this.findOneByCode('*:*');
 
         if (existingPermission) {
             return existingPermission;
         }
 
         const permission = this.permissionRepository.create({
-            code: process.env.SUPER_ADMIN_CODE,
-            name: process.env.SUPER_ADMIN_NAME,
+            code: '*:*',
+            name: 'super_admin',
         });
         return this.permissionRepository.save(permission);
     }

@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { hashPassword } from 'common/utils/password';
 import { UserStatus } from './types/user.type';
+import type { UserInfoDto } from './dto/user-info.dto';
 
 @Injectable()
 export class UserService {
@@ -48,6 +49,7 @@ export class UserService {
 
         return await this.userRepo.save(defaultSuperAdmin);
     }
+
     findAll() {
         return `This action returns all user`;
     }
@@ -62,6 +64,10 @@ export class UserService {
                 'username',
                 'email',
                 'password',
+                'avatar',
+                'realName',
+                'desc',
+                'homePath',
                 'status',
                 'created_at',
                 'updated_at',
@@ -71,10 +77,32 @@ export class UserService {
         return user;
     }
 
-    async getUserInfo(user: User) {
-        return await this.userRepo.findOne({
-            where: { id: user.id },
+    async getUserInfo(userId: number): Promise<UserInfoDto> {
+        const userInfo = await this.userRepo.findOne({
+            where: { id: userId },
+            relations: ['roles'],
         });
+
+        if (!userInfo) {
+            throw new Error('用户不存在');
+        }
+
+        return this.formatUserInfo(userInfo);
+    }
+
+    // 格式化用户信息，与前端 UserInfo 类型对齐
+    private formatUserInfo(user: User): UserInfoDto {
+        return {
+            userId: String(user.id),
+            username: user.username,
+            realName: user.realName || '',
+            avatar: user.avatar || '',
+            desc: user.desc || '',
+            homePath: user.homePath || '',
+            email: user.email,
+            status: user.status,
+            roles: user.roles?.map((role) => role.name) || [],
+        };
     }
 
     // 查询用户权限

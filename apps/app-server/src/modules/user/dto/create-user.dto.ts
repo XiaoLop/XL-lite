@@ -36,6 +36,38 @@ export class CreateUserDto {
     email!: string;
 
     @ApiProperty({
+        description: '头像',
+        required: false,
+    })
+    @IsOptional()
+    @IsString()
+    avatar?: string;
+
+    @ApiProperty({
+        description: '真实姓名',
+        required: false,
+    })
+    @IsOptional()
+    @IsString()
+    realName?: string;
+
+    @ApiProperty({
+        description: '用户描述',
+        required: false,
+    })
+    @IsOptional()
+    @IsString()
+    desc?: string;
+
+    @ApiProperty({
+        description: '首页地址',
+        required: false,
+    })
+    @IsOptional()
+    @IsString()
+    homePath?: string;
+
+    @ApiProperty({
         description: `状态 - ${userStatus}`,
         required: false,
     })

@@ -32,7 +32,7 @@ export class RoleService {
     async createSuperAdmin() {
         // 判断超级管理员角色是否存在
         const existingRole = await this.roleRepository.findOneBy({
-            code: process.env.SUPER_ADMIN_NAME,
+            code: 'super_admin',
         });
 
         if (existingRole) {
@@ -40,8 +40,8 @@ export class RoleService {
         }
 
         const role = this.roleRepository.create({
-            code: process.env.SUPER_ADMIN_NAME,
-            name: process.env.SUPER_ADMIN_NAME,
+            code: 'super_admin',
+            name: 'super_admin',
             permissions: [await this.permissionService.createSuperAdmin()],
         });
 
