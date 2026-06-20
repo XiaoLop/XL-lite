@@ -29,11 +29,11 @@ export class MenuController {
         return this.menuService.create(createMenuDto);
     }
 
-    @ApiOperation({ summary: '查询所有活跃菜单' })
+    @ApiOperation({ summary: '获取所有菜单' })
     @ApiResult({
         type: [FindMenuDto],
     })
-    @Get('/active')
+    @Get('all')
     findAllBy() {
         return this.menuService.findActiveMenus();
     }

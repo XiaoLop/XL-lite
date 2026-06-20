@@ -39,7 +39,7 @@ export class PermissionGuard implements CanActivate {
         }
 
         // 处理超级级管理员权限
-        if (user.permissions.includes(process.env.SUPER_ADMIN_CODE)) {
+        if (user.permissions.includes('*:*')) {
             return true;
         }
 
