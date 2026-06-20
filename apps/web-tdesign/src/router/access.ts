@@ -49,7 +49,9 @@ function handleMenu(menuList: MenuListResponse[]): RouteRecordStringComponent[] 
       });
   }
 
-  return buildTree(0);
+  const accessibleRoutes = buildTree(0);
+  console.log('accessibleRoutes', accessibleRoutes);
+  return accessibleRoutes;
 }
 
 
