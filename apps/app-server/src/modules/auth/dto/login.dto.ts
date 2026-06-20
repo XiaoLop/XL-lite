@@ -26,3 +26,10 @@ export class LoginDto {
     @IsString()
     captchaId!: string;
 }
+
+export class LoginResultDto {
+    @ApiProperty({
+        description: 'token',
+    })
+    accessToken!: string;
+}

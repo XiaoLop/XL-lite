@@ -47,6 +47,11 @@ export class AuthService {
         return user;
     }
 
+    // 获取用户权限码
+    async getCodes(userId: number) {
+        return await this.userService.getUserPermissions(userId);
+    }
+
     // 生成 Access Token
     generateAccessToken(payload: AccessJwtPayload) {
         return this.jwtService.sign(payload, {

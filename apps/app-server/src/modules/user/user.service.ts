@@ -57,9 +57,40 @@ export class UserService {
         const user = await this.userRepo.findOne({
             where: [{ username }, { email: username }],
             relations: ['roles', 'roles.permissions'], // 关联角色和权限数据
+            select: [
+                'id',
+                'username',
+                'email',
+                'password',
+                'status',
+                'created_at',
+                'updated_at',
+            ],
         });
 
         return user;
+    }
+
+    async getUserInfo(user: User) {
+        return await this.userRepo.findOne({
+            where: { id: user.id },
+        });
+    }
+
+    // 查询用户权限
+    async getUserPermissions(userId: number) {
+        const userInfo = await this.userRepo.findOne({
+            where: { id: userId },
+            relations: ['roles', 'roles.permissions'],
+        });
+
+        if (!userInfo) {
+            throw new Error('用户不存在');
+        }
+
+        return userInfo.roles.flatMap((role) =>
+            role.permissions.map((perm) => perm.code),
+        );
     }
 
     findOne(id: number) {

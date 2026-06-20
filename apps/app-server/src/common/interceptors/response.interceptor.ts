@@ -14,8 +14,7 @@ export class ResponseInterceptor<T> implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         return next.handle().pipe(
             map((data: T) => {
-                const response = context.switchToHttp().getResponse<Response>();
-                const code = response.statusCode;
+                const code = 0;
                 return new CommonResponseDto<T>(code, 'OK', data);
             }),
         );

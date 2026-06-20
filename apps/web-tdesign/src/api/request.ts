@@ -18,6 +18,15 @@ import { useAuthStore } from '#/store';
 
 import { refreshTokenApi } from './core';
 
+
+export interface ApiResponse<T = any> {
+  data: {
+    code: number;
+    data: T;
+    message: string;
+  }
+}
+
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 function createRequestClient(baseURL: string, options?: RequestClientOptions) {

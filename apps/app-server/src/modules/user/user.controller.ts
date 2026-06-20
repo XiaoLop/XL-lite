@@ -6,14 +6,35 @@ import {
     Patch,
     Param,
     Delete,
+    Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import type { User } from './entities/user.entity';
+import { ApiResult } from 'common/decorators/api-result.decorator';
+import { UserInfoDto } from './dto/user-info.dto';
+import { ApiOperation } from '@nestjs/swagger';
+
+interface RequestWithUser extends Request {
+    user: User;
+}
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
+
+    // 根据Token获取用户信息
+    @Get('info')
+    @ApiOperation({
+        summary: '获取用户信息',
+    })
+    @ApiResult({
+        type: UserInfoDto,
+    })
+    async getUserInfo(@Req() req: RequestWithUser) {
+        return await this.userService.getUserInfo(req.user);
+    }
 
     @Post()
     create(@Body() createUserDto: CreateUserDto) {

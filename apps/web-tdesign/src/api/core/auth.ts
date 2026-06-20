@@ -1,10 +1,12 @@
-import { baseRequestClient, requestClient } from '#/api/request';
+import { baseRequestClient, requestClient, type ApiResponse } from '#/api/request';
 
 export namespace AuthApi {
   /** 登录接口参数 */
   export interface LoginParams {
-    password?: string;
-    username?: string;
+    username: string;
+    password: string;
+    captcha: string;
+    captchaId: string;
   }
 
   /** 登录接口返回值 */
@@ -16,6 +18,12 @@ export namespace AuthApi {
     data: string;
     status: number;
   }
+
+  /** 验证码返回值 */
+  export interface CaptchaResult {
+    captchaId: string;
+    captchaImage: string;
+  }
 }
 
 /**
@@ -26,10 +34,18 @@ export async function loginApi(data: AuthApi.LoginParams) {
 }
 
 /**
+ * 获取验证码
+ */
+export async function getCaptchaApi() {
+  const res = await baseRequestClient.get<ApiResponse<AuthApi.CaptchaResult>>('/captcha');
+  return res.data.data;
+}
+
+/**
  * 刷新accessToken
  */
 export async function refreshTokenApi() {
-  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/auth/refresh', {
+  return baseRequestClient.post<ApiResponse<AuthApi.RefreshTokenResult>>('/auth/refresh', {
     withCredentials: true,
   });
 }
@@ -39,7 +55,7 @@ export async function refreshTokenApi() {
  */
 export async function logoutApi() {
   return baseRequestClient.post('/auth/logout', {
-    withCredentials: true,
+    withCredentials: true, // 跨域请求时携带cookie
   });
 }
 
@@ -47,5 +63,7 @@ export async function logoutApi() {
  * 获取用户权限码
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+  const res = requestClient.get<string[]>('/auth/codes');
+  console.log(res);
+  return res;
 }
