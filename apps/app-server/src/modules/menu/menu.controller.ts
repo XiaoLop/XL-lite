@@ -1,12 +1,4 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
@@ -68,7 +60,7 @@ export class MenuController {
     @ApiBody({
         type: UpdateMenuDto,
     })
-    @Patch(':id')
+    @Post(':id')
     update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
         return this.menuService.update(+id, updateMenuDto);
     }

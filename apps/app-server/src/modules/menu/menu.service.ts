@@ -63,8 +63,8 @@ export class MenuService {
      * @param id
      * @returns
      */
-    remove(id: number) {
-        return `This action removes a #${id} menu`;
+    async remove(id: number) {
+        await this.menuRepo.delete(id);
     }
 
     /**

@@ -9,6 +9,14 @@
         "apifox-mcp-server@latest",
         "--oas=http://localhost:3000/doc/json"
       ]
+    },
+    "tdesign-mcp-server": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "tdesign-mcp-server@latest"
+      ]
     }
   }
 }

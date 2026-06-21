@@ -49,7 +49,7 @@ export class AuthController {
         res.cookie('refreshToken', result.refreshToken, {
             httpOnly: true,
             sameSite: 'strict',
-            maxAge: safeEval(process.env.JWT_REFRESH_EXPIRATION), // 7 天
+            maxAge: safeEval(process.env.JWT_REFRESH_EXPIRATION) * 1000, // 7 天
         });
 
         return { accessToken: result.accessToken };
@@ -70,7 +70,13 @@ export class AuthController {
         // 从 Cookie 中获取 Refresh Token
         const refreshToken = req.cookies['refreshToken'] as string;
         if (!refreshToken) {
-            return { accessToken: null };
+            throw new HttpException(
+                {
+                    message: 'refreshToken is required',
+                    data: null,
+                },
+                HttpStatus.UNAUTHORIZED,
+            );
         }
 
         try {

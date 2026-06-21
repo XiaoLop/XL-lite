@@ -325,7 +325,6 @@ watch(
         sort: newVal.sort,
         parent_id: newVal.parent_id,
       }
-      console.log(newVal)
       selectedParentMenu.value = null
       if (form.value.parent_id) {
         // 获取父级菜单

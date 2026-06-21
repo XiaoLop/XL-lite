@@ -29,6 +29,9 @@
             </template>
             <template #action="{ row }">
                 <Space>
+                    <Button theme="primary" variant="text" size="small" @click="handleAddChild(row)">
+                        新增子菜单
+                    </Button>
                     <Button theme="primary" variant="text" size="small" @click="handleEdit(row)">
                         编辑
                     </Button>
@@ -38,20 +41,21 @@
                 </Space>
             </template>
         </Grid>
+        <MenuForm ref="menuFormRef" @success="loadData" />
     </Page>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { Button, Tag, Space, Icon } from 'tdesign-vue-next';
-import { getMenuListApi, type MenuListResponse } from '#/api';
+import { Button, Tag, Space, Icon, DialogPlugin } from 'tdesign-vue-next';
+import { message } from '#/adapter/tdesign';
+import { getMenuListApi, deleteMenuApi, type MenuListResponse } from '#/api';
 import baseIcon from '#/components/baseIcon.vue';
+import MenuForm from './MenuForm.vue';
 
-// tdesign 组件需要注册为全局渲染器才能在 vxe-table 的 cell-render 中使用
-// 这里直接在模板中使用 slot 方式
 
 const typeMap: Record<string, { label: string; theme: 'primary' | 'success' | 'warning' | 'default' }> = {
     MENU: { label: '菜单', theme: 'primary' },
@@ -90,7 +94,7 @@ const gridOptions: VxeGridProps<RowType> = {
         },
         {
             title: '操作',
-            width: 140,
+            width: 200,
             fixed: 'right',
             slots: { default: 'action' },
         },
@@ -120,6 +124,8 @@ const gridOptions: VxeGridProps<RowType> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
+const menuFormRef = ref<InstanceType<typeof MenuForm> | null>(null);
+
 async function loadData() {
     gridApi.setLoading(true);
     try {
@@ -134,15 +140,38 @@ async function loadData() {
 }
 
 function handleAdd() {
-    console.log('新增菜单');
+    menuFormRef.value?.open();
 }
 
 function handleEdit(row: RowType) {
-    console.log('编辑菜单', row);
+    menuFormRef.value?.open(row);
+}
+
+function handleAddChild(row: RowType) {
+    menuFormRef.value?.open(undefined, row.id);
 }
 
 function handleDelete(row: RowType) {
-    console.log('删除菜单', row);
+    const confirmDialog = DialogPlugin.confirm({
+        header: '确认删除',
+        body: `确定要删除菜单「${row.name}」吗？`,
+        confirmBtn: '删除',
+        cancelBtn: '取消',
+        onConfirm: async () => {
+            try {
+                gridApi.setLoading(true);
+                await deleteMenuApi(row.id);
+                message.success('删除成功');
+                loadData();
+            } finally {
+                gridApi.setLoading(false);
+                confirmDialog.destroy();
+            }
+        },
+        onClose: () => {
+            confirmDialog.destroy();
+        },
+    });
 }
 
 onMounted(() => {
