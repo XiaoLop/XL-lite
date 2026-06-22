@@ -7,6 +7,7 @@
     "docker:up": "pnpm --filter app-server docker:up",
     "docker:down": "pnpm --filter app-server docker:down",
     "dev:server": "pnpm --filter app-server start",
+    "dev:admin": "pnpm --filter app-admin dev",
     "module": "pnpm --filter generated module"
   },
   "keywords": [],
