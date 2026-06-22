@@ -36,7 +36,8 @@ export class <%- serviceName %> {
         return this.repo.update(id, body);
     }
 
-    remove(id: number) {
-        return this.repo.delete(id);
+    remove(ids: number[]) {
+        if (!ids.length) return { affected: 0 };
+        return this.repo.delete(ids);
     }
 }

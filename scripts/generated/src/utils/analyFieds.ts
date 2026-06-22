@@ -1,5 +1,8 @@
 import type { Field } from "../types/entity";
 
+
+const types = ['string', 'number', 'boolean', 'Date']
+
 export function analyFieds(fieldStr: string) {
     if (!fieldStr.trim()) {
         return [];
@@ -9,6 +12,11 @@ export function analyFieds(fieldStr: string) {
 
     const fieldsList: Field[] = fields.map((field: string) => {
         const fieldArr = field.split(':').map((s) => s.trim());
+
+        if(!types.includes(fieldArr[1] || '')){
+            throw new Error(`字段类型错误：${fieldArr[1]}`);
+        }
+
         return {
             name: fieldArr[0] || '',
             type: fieldArr[1] || '',

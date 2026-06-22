@@ -48,7 +48,7 @@ function lintFixCode(modelName: string){
             {
                 cwd: config.serverPath,
                 shell: true,
-                stdio: ['pipe', 'pipe', 'pipe'],
+                stdio: 'inherit', 
             }
         );
 

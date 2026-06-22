@@ -1,18 +1,101 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+<%
+// 收集需要的 class-validator 装饰器
+const neededDecorators = new Set();
+neededDecorators.add('IsOptional'); // 查询字段全部可选
+
+if (fields) {
+    fields.forEach(field => {
+        const type = (field.type || '').toLowerCase();
+        if (type.endsWith('[]')) {
+            neededDecorators.add('IsArray');
+            const itemType = type.replace('[]', '');
+            if (itemType === 'number') neededDecorators.add('IsNumber');
+            else if (itemType === 'boolean') neededDecorators.add('IsBoolean');
+            else neededDecorators.add('IsString');
+        } else if (type === 'number') {
+            neededDecorators.add('IsNumber');
+        } else if (type === 'boolean') {
+            neededDecorators.add('IsBoolean');
+        } else {
+            neededDecorators.add('IsString');
+        }
+    });
+}
+
+const imports = Array.from(neededDecorators).sort();
+%>
+import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
+<% if (imports.length > 0) { %>
+import { <%- imports.join(', ') %> } from 'class-validator';
+<% } %>
 import { PaginationDto } from 'common/dto/pagination.dto';
-import { <%- createDtoName %> } from './create.dto';
+import { EmptyToUndefined } from 'common/decorators/empty-to-undefined.decorator';
 
 // 查询参数
-export class <%- queryDtoName %> extends PartialType(<%- createDtoName %>) {}
+export class <%- queryDtoName %> {
+    @ApiProperty({ description: 'id', required: false })
+    @EmptyToUndefined()
+    @IsOptional()
+    @IsNumber()
+    id?: number;
+
+<% if (fields && fields.length > 0) {
+    fields.forEach(field => {
+        const rawType = (field.type || '').toLowerCase();
+        const isArray = rawType.endsWith('[]');
+        const itemType = isArray ? rawType.replace('[]', '') : rawType;
+        const tsType = isArray
+            ? (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : 'string') + '[]'
+            : (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : 'string');
+_%>
+
+    @ApiProperty({ description: '<%- field.comment || field.name %>', required: false })
+    @EmptyToUndefined()
+    @IsOptional()
+<% if (isArray) { -%>
+    @IsArray()
+<%   if (itemType === 'number') { -%>
+    @IsNumber({}, { each: true })
+<%   } else if (itemType === 'boolean') { -%>
+    @IsBoolean({ each: true })
+<%   } else { -%>
+    @IsString({ each: true })
+<%   } -%>
+<% } else if (itemType === 'number') { -%>
+    @IsNumber()
+<% } else if (itemType === 'boolean') { -%>
+    @IsBoolean()
+<% } else { -%>
+    @IsString()
+<% } -%>
+    <%- field.name %>?: <%- tsType %>;
+<% });
+} %>
+
+    @ApiProperty({ description: '创建时间', required: false })
+    @EmptyToUndefined()
+    @IsOptional()
+    @IsString()
+    createdAt?: string;
+
+    @ApiProperty({ description: '更新时间', required: false })
+    @EmptyToUndefined()
+    @IsOptional()
+    @IsString()
+    updatedAt?: string;
+}
 
 // 分页参数
-export class <%- paginationDtoName %> extends PartialType(PaginationDto) {}
+export class <%- paginationDtoName %> extends IntersectionType(
+    PartialType(PaginationDto),
+    <%- queryDtoName %>,
+) {}
 
 // 响应参数
 export class <%- responseDtoName %> {
     @ApiProperty({ description: '总条' })
     total!: number;
 
-    @ApiProperty({ description: '列表' })
+    @ApiProperty({ description: '列表', type: <%- queryDtoName %>, isArray: true })
     list!: <%- queryDtoName %>[];
 }

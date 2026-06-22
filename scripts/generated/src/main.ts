@@ -18,7 +18,7 @@ program
     .option('--no-time', '不生成创建、修改时间字段', true)
     .option('-f, --fields <fields>',
         `字段列表 (格式：字段名:字段类型:是否必填:默认值:注释,字段名:字段类型:是否必填:默认值:注释)。 
-         字段类型: string | number | boolean | Date | Buffer
+         字段类型: string | number | boolean | Date 
          是否必填: true | false
         `)
     .action((name, options) => {

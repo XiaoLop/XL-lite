@@ -61,12 +61,12 @@ export class <%- controllerName %> {
         return this.<%- serviceExampleName %>.update(+id, body);
     }
 
-    @Delete(':id')
+    @Delete()
     @ApiOperation({ summary: '删除' })
-    @ApiParam({ name: 'id', type: Number })
+    @ApiBody({ schema: { type: 'array', items: { type: 'number' } } })
     @Permission('<%- globalName %>:remove')
     @UsePipes(new ValidationPipe())
-    remove(@Param('id') id: string) {
-        return this.<%- serviceExampleName %>.remove(+id);
+    remove(@Body() ids: number[]) {
+        return this.<%- serviceExampleName %>.remove(ids);
     }
 }
