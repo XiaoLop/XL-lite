@@ -9,9 +9,8 @@ import {
     ValidationPipe,
     Query,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiResult } from 'common/decorators/api-result.decorator';
-import { Public } from 'common/decorators/public.decorator';
 import { Permission } from 'common/decorators/permission.decorator';
 import { <%- serviceName %> } from './<%- globalName %>.service';
 import { <%- createDtoName %> } from './dto/create.dto';
@@ -19,7 +18,7 @@ import { <%- updateDtoName %> } from './dto/update.dto';
 import { <%- paginationDtoName %>, <%- responseDtoName %> } from './dto/query.dto';
 
 @Controller('<%- globalName %>')
-@Public()
+@ApiBearerAuth()
 export class <%- controllerName %> {
     constructor(private readonly <%- serviceExampleName %>: <%- serviceName %>) {}
 

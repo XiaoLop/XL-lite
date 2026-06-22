@@ -1,1 +1,69 @@
-export class <%- createDtoName %> {}
+<%
+// 收集需要的 class-validator 装饰器
+const neededDecorators = new Set();
+if (fields && fields.some(f => !f.required)) {
+    neededDecorators.add('IsOptional');
+}
+
+if (fields) {
+    fields.forEach(field => {
+        const type = (field.type || '').toLowerCase();
+        if (type.endsWith('[]')) {
+            neededDecorators.add('IsArray');
+            const itemType = type.replace('[]', '');
+            if (itemType === 'number') neededDecorators.add('IsNumber');
+            else if (itemType === 'boolean') neededDecorators.add('IsBoolean');
+            else neededDecorators.add('IsString');
+        } else if (type === 'number') {
+            neededDecorators.add('IsNumber');
+        } else if (type === 'boolean') {
+            neededDecorators.add('IsBoolean');
+        } else {
+            neededDecorators.add('IsString');
+        }
+    });
+}
+
+const imports = Array.from(neededDecorators).sort();
+%>
+<% if (imports.length > 0) { %>
+import { <%- imports.join(', ') %> } from 'class-validator';
+<% } %>
+import { ApiProperty } from '@nestjs/swagger';
+
+export class <%- createDtoName %> {
+<% if (fields && fields.length > 0) {
+    fields.forEach(field => {
+        const rawType = (field.type || '').toLowerCase();
+        const isArray = rawType.endsWith('[]');
+        const itemType = isArray ? rawType.replace('[]', '') : rawType;
+        const tsType = isArray
+            ? (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : 'string') + '[]'
+            : (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : 'string');
+        const requiredMark = field.required ? '!' : '?';
+_%>
+
+    @ApiProperty({ description: '<%- field.comment || field.name %>'<%- field.required ? '' : ', required: false' %> })
+<% if (!field.required) { -%>
+    @IsOptional()
+<% } -%>
+<% if (isArray) { -%>
+    @IsArray()
+<%   if (itemType === 'number') { -%>
+    @IsNumber({}, { each: true })
+<%   } else if (itemType === 'boolean') { -%>
+    @IsBoolean({ each: true })
+<%   } else { -%>
+    @IsString({ each: true })
+<%   } -%>
+<% } else if (itemType === 'number') { -%>
+    @IsNumber()
+<% } else if (itemType === 'boolean') { -%>
+    @IsBoolean()
+<% } else { -%>
+    @IsString()
+<% } -%>
+    <%- field.name %><%- requiredMark %>: <%- tsType %>;
+<% });
+} %>
+}

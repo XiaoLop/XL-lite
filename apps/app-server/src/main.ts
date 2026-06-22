@@ -19,6 +19,7 @@ async function bootstrap() {
             .setDescription('XL Lite 接口文档')
             .setVersion('1.0') // 文档版本
             .addTag('XL') // 添加标签
+            .addBearerAuth() // 启用 Bearer Token 鉴权
             .build();
 
         const documentFactory = () => SwaggerModule.createDocument(app, config);

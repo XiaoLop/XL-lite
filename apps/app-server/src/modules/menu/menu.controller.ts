@@ -2,11 +2,17 @@ import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
-import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiOperation,
+    ApiParam,
+} from '@nestjs/swagger';
 import { ApiResult } from 'common/decorators/api-result.decorator';
 import { FindMenuDto } from './dto/find-menu.dto';
 import { Permission } from 'common/decorators/permission.decorator';
 
+@ApiBearerAuth()
 @Permission('menu')
 @Controller('menu')
 export class MenuController {
