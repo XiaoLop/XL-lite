@@ -1,0 +1,18 @@
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { PaginationDto } from 'common/dto/pagination.dto';
+import { <%- createDtoName %> } from './create.dto';
+
+// 查询参数
+export class <%- queryDtoName %> extends PartialType(<%- createDtoName %>) {}
+
+// 分页参数
+export class <%- paginationDtoName %> extends PartialType(PaginationDto) {}
+
+// 响应参数
+export class <%- responseDtoName %> {
+    @ApiProperty({ description: '总条' })
+    total!: number;
+
+    @ApiProperty({ description: '列表' })
+    list!: <%- queryDtoName %>[];
+}

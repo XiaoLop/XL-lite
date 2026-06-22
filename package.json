@@ -6,7 +6,8 @@
   "scripts": {
     "docker:up": "pnpm --filter app-server docker:up",
     "docker:down": "pnpm --filter app-server docker:down",
-    "dev:server": "pnpm --filter app-server start"
+    "dev:server": "pnpm --filter app-server start",
+    "module": "pnpm --filter generated module"
   },
   "keywords": [],
   "author": "",

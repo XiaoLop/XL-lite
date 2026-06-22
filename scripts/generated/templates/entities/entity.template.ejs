@@ -1,0 +1,60 @@
+
+<% 
+// 自动计算 typeorm 的基础导入
+var typeormImports = ['Entity', 'Column'];
+if (!isNoId) typeormImports.push('PrimaryGeneratedColumn');
+if (!isNoTime) {
+    typeormImports.push('CreateDateColumn');
+    typeormImports.push('UpdateDateColumn');
+}
+%>
+import { <%= typeormImports.join(', ') %> } from 'typeorm';
+
+@Entity()
+export class <%= entityName %> {
+<% if (!isNoId) { %>
+    @PrimaryGeneratedColumn()
+    id!: number;
+<% } %>
+
+<% if (typeof fields !== 'undefined' && fields) { 
+fields.forEach(function(field) {
+    var options = [];
+    
+    if (!field.required) {
+        options.push('nullable: true');
+    }
+    
+    if (field.default && field.default.trim() !== '') {
+        options.push('default: ' + field.default);
+    }
+    
+    if (field.comment && field.comment.trim() !== '') {
+        options.push("comment: '" + field.comment.replace(/'/g, "\\'") + "'");
+    }
+    
+    var decorator = '@Column';
+    if (options.length > 0) {
+        decorator += '({\n        ' + options.join(',\n        ') + '\n    })';
+    } else {
+        decorator += '()';
+    }
+    
+    var optionalMark = field.required ? '!' : '?';
+    var tsComment = field.comment ? ' // ' + field.comment : '';
+%>
+
+    <%- decorator %>
+    <%- field.name %><%- optionalMark %>: <%- field.type %><%- tsComment %>
+<% }); 
+} %>
+
+<% if (!isNoTime) { %>
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    updatedAt!: Date;
+<% } %>
+}

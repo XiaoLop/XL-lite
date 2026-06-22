@@ -13,6 +13,7 @@ packages:
   - internal/node-utils/*
   - internal/tailwind-config/*
   - internal/vite-config/*
+  - scripts/*
 
 catalog:
   '@ast-grep/napi': ^0.43.0

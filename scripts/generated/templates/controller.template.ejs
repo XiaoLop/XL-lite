@@ -1,0 +1,73 @@
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Param,
+    Delete,
+    UsePipes,
+    ValidationPipe,
+    Query,
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiResult } from 'common/decorators/api-result.decorator';
+import { Public } from 'common/decorators/public.decorator';
+import { Permission } from 'common/decorators/permission.decorator';
+import { <%- serviceName %> } from './<%- globalName %>.service';
+import { <%- createDtoName %> } from './dto/create.dto';
+import { <%- updateDtoName %> } from './dto/update.dto';
+import { <%- paginationDtoName %>, <%- responseDtoName %> } from './dto/query.dto';
+
+@Controller('<%- globalName %>')
+@Public()
+export class <%- controllerName %> {
+    constructor(private readonly <%- serviceExampleName %>: <%- serviceName %>) {}
+
+    @Post()
+    @ApiOperation({ summary: '创建' })
+    @ApiBody({ type: <%- createDtoName %> })
+    @Permission('<%- globalName %>:create')
+    @UsePipes(new ValidationPipe())
+    create(@Body() body: <%- createDtoName %>) {
+        return this.<%- serviceExampleName %>.create(body);
+    }
+
+    @Get()
+    @ApiOperation({ summary: '查询列表' })
+    @ApiQuery({ type: <%- paginationDtoName %> })
+    @ApiResult({ type: <%- responseDtoName %> })
+    @Permission('<%- globalName %>:findAll')
+    @UsePipes(new ValidationPipe())
+    findAll(@Query() query: <%- paginationDtoName %>) {
+        return this.<%- serviceExampleName %>.findAll(query);
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: '查询详情' })
+    @ApiParam({ name: 'id', type: Number })
+    @ApiResult({ type: <%- responseDtoName %> })
+    @Permission('<%- globalName %>:findOne')
+    @UsePipes(new ValidationPipe())
+    findOne(@Param('id') id: string) {
+        return this.<%- serviceExampleName %>.findOne(+id);
+    }
+
+    @Post(':id')
+    @ApiOperation({ summary: '更新' })
+    @ApiParam({ name: 'id', type: Number })
+    @ApiBody({ type: <%- updateDtoName %> })
+    @Permission('<%- globalName %>:update')
+    @UsePipes(new ValidationPipe())
+    update(@Param('id') id: string, @Body() body: <%- updateDtoName %>) {
+        return this.<%- serviceExampleName %>.update(+id, body);
+    }
+
+    @Delete(':id')
+    @ApiOperation({ summary: '删除' })
+    @ApiParam({ name: 'id', type: Number })
+    @Permission('<%- globalName %>:remove')
+    @UsePipes(new ValidationPipe())
+    remove(@Param('id') id: string) {
+        return this.<%- serviceExampleName %>.remove(+id);
+    }
+}
