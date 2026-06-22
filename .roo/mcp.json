@@ -21,6 +21,15 @@
 				"read_project_oas_ref_resources_a8xkwa",
 				"refresh_project_oas_a8xkwa"
 			]
+		},
+		"tdesign-mcp-server": {
+			"command": "cmd",
+			"args": [
+				"/c",
+				"npx",
+				"-y",
+				"tdesign-mcp-server@latest"
+			]
 		}
 	}
 }
