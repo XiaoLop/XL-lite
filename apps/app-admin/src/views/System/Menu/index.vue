@@ -1,224 +1,182 @@
 <template>
-  <div class="menu-management">
-    <ConfirmDialog />
-    <Toast />
+    <Page>
+        <Grid>
+            <template #toolbar-actions>
+                <Button theme="primary" @click="handleAdd">
+                    <template #icon>
+                        <Icon name="add"></Icon>
+                    </template>
+                    新增菜单
+                </Button>
+            </template>
 
-    <Card>
-      <template #content>
-        <MenuTable
-          :menu-list="menuList"
-          :loading="loading"
-          @add="handleAdd"
-          @add-child="handleAddChild"
-          @edit="handleEdit"
-          @delete="handleDelete"
-        />
-      </template>
-    </Card>
+            <template #name="{ row }">
+                <div class="flex items-center ml-2">
+                    <baseIcon v-if="row.icon" :icon="row.icon" class="size-4"></baseIcon>
+                    <span class="ml-1 text-sm">{{ row.name }}</span>
+                </div>
+            </template>
 
-    <MenuForm
-      v-model:visible="formVisible"
-      :is-edit="isEdit"
-      :menu-data="currentMenu"
-      :menu-list="menuList"
-      :submitting="submitting"
-      @submit="handleFormSubmit"
-      @cancel="handleFormCancel"
-    />
-  </div>
+            <template #status="{ row }">
+                <Tag :theme="row.status ? 'success' : 'danger'" variant="light">
+                    {{ row.status ? '启用' : '禁用' }}
+                </Tag>
+            </template>
+            <template #type="{ row }">
+                <Tag :theme="getTypeTheme(row.type)" variant="light">
+                    {{ getTypeLabel(row.type) }}
+                </Tag>
+            </template>
+            <template #action="{ row }">
+                <Space>
+                    <Button theme="primary" variant="text" size="small" @click="handleAddChild(row)">
+                        新增子菜单
+                    </Button>
+                    <Button theme="primary" variant="text" size="small" @click="handleEdit(row)">
+                        编辑
+                    </Button>
+                    <Button theme="danger" variant="text" size="small" @click="handleDelete(row)">
+                        删除
+                    </Button>
+                </Space>
+            </template>
+        </Grid>
+        <MenuForm ref="menuFormRef" @success="loadData" />
+    </Page>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import MenuTable from './components/MenuTable.vue'
-import MenuForm from './components/MenuForm.vue'
-import {
-  getMenusApi,
-  createMenuApi,
-  updateMenuApi,
-  deleteMenuApi,
-  type CreateMenuDto,
-  type UpdateMenuDto,
-} from '@/api/menu'
-import type { MenuItem } from '@/types/menu.type'
+import { onMounted, ref } from 'vue';
+import { Page } from '@vben/common-ui';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { Button, Tag, Space, Icon, DialogPlugin } from 'tdesign-vue-next';
+import { message } from '#/adapter/tdesign';
+import { getMenuListApi, deleteMenuApi, type MenuListResponse } from '#/api';
+import baseIcon from '#/components/baseIcon.vue';
+import MenuForm from './MenuForm.vue';
 
-const toast = useToast()
 
-// 数据状态
-const menuList = ref<MenuItem[]>([])
-const loading = ref(false)
-const submitting = ref(false)
+const typeMap: Record<string, { label: string; theme: 'primary' | 'success' | 'warning' | 'default' }> = {
+    MENU: { label: '菜单', theme: 'primary' },
+    BUTTON: { label: '按钮', theme: 'warning' },
+    DIRECT: { label: '目录', theme: 'success' },
+};
 
-// 表单状态
-const formVisible = ref(false)
-const isEdit = ref(false) // 是否是编辑
-const currentMenu = ref<MenuItem | null>(null)
-
-// 获取菜单列表
-const fetchMenuList = async () => {
-  loading.value = true
-  try {
-    const res = await getMenusApi()
-    menuList.value = res.data
-  } catch {
-    toast.add({
-      severity: 'error',
-      summary: '错误',
-      detail: '获取菜单列表失败',
-      life: 3000,
-    })
-  } finally {
-    loading.value = false
-  }
+function getTypeLabel(type: string) {
+    return typeMap[type]?.label || type;
 }
 
-// 打开新增弹窗
-const handleAdd = () => {
-  isEdit.value = false
-  currentMenu.value = null
-  formVisible.value = true
+function getTypeTheme(type: string): 'primary' | 'success' | 'warning' | 'default' {
+    return typeMap[type]?.theme || 'default';
 }
 
-// 打开新增子菜单弹窗
-const handleAddChild = (parent: MenuItem) => {
-  isEdit.value = false
-  currentMenu.value = {
-    id: 0,
-    name: '',
-    icon: '',
-    path: '',
-    component: '',
-    permission_code: '',
-    sort: 0,
-    parent_id: parent.id,
-    type: parent.type,
-  } as MenuItem
-  formVisible.value = true
-}
+interface RowType extends MenuListResponse { }
 
-// 打开编辑弹窗
-const handleEdit = (menu: MenuItem) => {
-  isEdit.value = true
-  currentMenu.value = { ...menu }
-  formVisible.value = true
-}
+const gridOptions: VxeGridProps<RowType> = {
+    columns: [
+        { field: 'name', title: '菜单名称', treeNode: true, minWidth: 100, slots: { default: 'name' } },
+        { field: 'path', title: '路由路径', minWidth: 140 },
+        { field: 'component', title: '组件路径', minWidth: 160 },
+        { field: 'permission_code', title: '权限码', minWidth: 120 },
+        {
+            field: 'type',
+            title: '类型',
+            width: 80,
+            slots: { default: 'type' },
+        },
+        { field: 'sort', title: '排序', width: 70 },
+        {
+            field: 'status',
+            title: '状态',
+            width: 80,
+            slots: { default: 'status' },
+        },
+        {
+            title: '操作',
+            width: 200,
+            fixed: 'right',
+            slots: { default: 'action' },
+        },
+    ],
+    treeConfig: {
+        transform: true,
+        rowField: 'id',
+        parentField: 'parent_id',
+        // 默认展开
+        expandAll: true,
+    },
+    rowConfig: {
+        keyField: 'id',
+    },
+    // 禁用分页，树形表格通常不需要分页
+    pagerConfig: {
+        enabled: false,
+    },
+    // 禁用代理，手动加载数据
+    proxyConfig: {
+        enabled: false,
+        autoLoad: false,
+    },
+    loading: false,
+    stripe: true,
+};
 
-// 删除菜单
-const handleDelete = async (id: number) => {
-  try {
-    await deleteMenuApi(id)
-    toast.add({
-      severity: 'success',
-      summary: '成功',
-      detail: '删除菜单成功',
-      life: 3000,
-    })
-    fetchMenuList()
-  } catch {
-    toast.add({
-      severity: 'error',
-      summary: '错误',
-      detail: '删除菜单失败',
-      life: 3000,
-    })
-  }
-}
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
-// 提交表单
-const handleFormSubmit = async (formData: {
-  name: string
-  type: import('@/types/menu.type').MenuType
-  icon?: string
-  path?: string
-  component?: string
-  permission_code?: string
-  sort: number
-  parent_id?: number
-}) => {
-  submitting.value = true
-  try {
-    if (isEdit.value && currentMenu.value) {
-      // 编辑
-      const updateData: UpdateMenuDto = {
-        name: formData.name,
-        type: formData.type,
-        icon: formData.icon,
-        path: formData.path,
-        component: formData.component,
-        permission_code: formData.permission_code,
-        sort: formData.sort,
-        parent_id: formData.parent_id,
-      }
-      await updateMenuApi(currentMenu.value.id, updateData)
-      toast.add({
-        severity: 'success',
-        summary: '成功',
-        detail: '更新菜单成功',
-        life: 3000,
-      })
-    } else {
-      // 新增
-      const createData: CreateMenuDto = {
-        name: formData.name,
-        type: formData.type,
-        icon: formData.icon,
-        path: formData.path,
-        component: formData.component,
-        permission_code: formData.permission_code,
-        sort: formData.sort,
-        parent_id: formData.parent_id,
-      }
-      await createMenuApi(createData)
-      toast.add({
-        severity: 'success',
-        summary: '成功',
-        detail: '创建菜单成功',
-        life: 3000,
-      })
+const menuFormRef = ref<InstanceType<typeof MenuForm> | null>(null);
+
+async function loadData() {
+    gridApi.setLoading(true);
+    try {
+        const data = await getMenuListApi();
+        const sortedData = [...(data || [])].sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+        gridApi.setGridOptions({
+            data: sortedData || [],
+        });
+    } finally {
+        gridApi.setLoading(false);
     }
-    formVisible.value = false
-    fetchMenuList()
-  } catch {
-    toast.add({
-      severity: 'error',
-      summary: '错误',
-      detail: isEdit.value ? '更新菜单失败' : '创建菜单失败',
-      life: 3000,
-    })
-  } finally {
-    submitting.value = false
-  }
 }
 
-// 取消表单
-const handleFormCancel = () => {
-  formVisible.value = false
-  currentMenu.value = null
+function handleAdd() {
+    menuFormRef.value?.open();
 }
 
-// 初始化
+function handleEdit(row: RowType) {
+    menuFormRef.value?.open(row);
+}
+
+function handleAddChild(row: RowType) {
+    menuFormRef.value?.open(undefined, row.id);
+}
+
+function handleDelete(row: RowType) {
+    const confirmDialog = DialogPlugin.confirm({
+        header: '确认删除',
+        body: `确定要删除菜单「${row.name}」吗？`,
+        confirmBtn: '删除',
+        cancelBtn: '取消',
+        onConfirm: async () => {
+            try {
+                gridApi.setLoading(true);
+                await deleteMenuApi(row.id);
+                message.success('删除成功');
+                loadData();
+            } finally {
+                gridApi.setLoading(false);
+                confirmDialog.destroy();
+            }
+        },
+        onClose: () => {
+            confirmDialog.destroy();
+        },
+    });
+}
+
 onMounted(() => {
-  fetchMenuList()
-})
+    loadData();
+});
 </script>
 
-<style scoped>
-.menu-management {
-  padding: 1rem;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.menu-management :deep(.p-card) {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.menu-management :deep(.p-card-content) {
-  flex: 1;
-  padding: 0;
-}
-</style>
+<style scoped></style>

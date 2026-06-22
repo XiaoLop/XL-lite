@@ -1,35 +1,20 @@
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from '@vben/vite-config';
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
-import Components from 'unplugin-vue-components/vite';
-import { PrimeVueResolver } from '@primevue/auto-import-resolver';
-import tailwindcss from '@tailwindcss/vite'
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    vue(),
-    vueDevTools(),
-    Components({
-      resolvers: [PrimeVueResolver()],
-    }),
-    tailwindcss(),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
-  },
-
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
+export default defineConfig(async () => {
+  return {
+    application: {},
+    vite: {
+      server: {
+        proxy: {
+          '/api': {
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            // mock代理目标地址
+            target: 'http://localhost:3000/api',
+            ws: true,
+          },
+        },
       },
     },
-  }
-
-})
+  };
+});
