@@ -1,7 +1,7 @@
 <template>
     <Page>
-        <Grid>
-            <template #toolbar-actions>
+        <Grid table-title="菜单管理">
+            <template #toolbar-tools>
                 <Button theme="primary" @click="handleAdd">
                     <template #icon>
                         <Icon name="add"></Icon>
@@ -12,7 +12,7 @@
 
             <template #name="{ row }">
                 <div class="flex items-center ml-2">
-                    <baseIcon v-if="row.icon" :icon="row.icon" class="size-4"></baseIcon>
+                    <BaseIcon v-if="row.icon" :icon="row.icon" class="size-4"></BaseIcon>
                     <span class="ml-1 text-sm">{{ row.name }}</span>
                 </div>
             </template>
@@ -53,7 +53,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { Button, Tag, Space, Icon, DialogPlugin } from 'tdesign-vue-next';
 import { message } from '#/adapter/tdesign';
 import { getMenuListApi, deleteMenuApi, type MenuListResponse } from '#/api';
-import baseIcon from '#/components/baseIcon.vue';
+import BaseIcon from '#/components/baseIcon.vue';
 import MenuForm from './MenuForm.vue';
 
 
@@ -120,6 +120,14 @@ const gridOptions: VxeGridProps<RowType> = {
     },
     loading: false,
     stripe: true,
+    toolbarConfig: {
+        custom: true,
+        refresh: true,
+        zoom: true,
+        refreshOptions: {
+            queryMethod: loadData
+        },
+    },  
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
