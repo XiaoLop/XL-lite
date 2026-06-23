@@ -1,0 +1,167 @@
+<template>
+    <Page>
+        <template #title>
+            <Form layout="inline" :data="queryParams" reset-type="initial" class="py-2">
+
+                <% for (const item of fields) { %>
+                <% if (item.type === 'boolean') { %>
+                <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+                    <Select v-model="queryParams.<%- item.name %>" placeholder="请选择<%- item.comment || item.name %>" clearable>
+                        <Option :value="true" label="启用" />
+                        <Option :value="false" label="禁用" />
+                    </Select>
+                </FormItem>
+                <% } else if (item.type === 'number') { %>
+                <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+                    <Input type="number" v-model="queryParams.<%- item.name %>" placeholder="请输入<%- item.comment || item.name %>" clearable />
+                </FormItem>
+                <% } else if (item.type === 'Date') { %>
+                <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+                    <DatePicker v-model="queryParams.<%- item.name %>" placeholder="请选择<%- item.comment || item.name %>" clearable />
+                </FormItem>
+                <% } else { %>
+                <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+                    <Input v-model="queryParams.<%- item.name %>" placeholder="请输入<%- item.comment || item.name %>" clearable />
+                </FormItem>
+                <% } %>
+                <% } %>
+
+                <FormItem>
+                    <Space>
+                        <Button theme="primary" @click="handleSearch">
+                            <template #icon>
+                                <Icon name="search" />
+                            </template>
+                            搜索
+                        </Button>
+                        <Button theme="default" variant="outline" @click="handleReset">
+                            <template #icon>
+                                <Icon name="refresh" />
+                            </template>
+                            重置
+                        </Button>
+                    </Space>
+                </FormItem>
+            </Form>
+        </template>
+
+        <Grid table-title="<%- name %>">
+            <template #toolbar-tools>
+                <Space>
+                    <Button theme="primary" @click="handleAdd">
+                        <template #icon>
+                            <Icon name="add" />
+                        </template>
+                        新增
+                    </Button>
+                    <Button theme="danger" variant="outline" @click="handleRemoveSelected">
+                        <template #icon>
+                            <Icon name="delete" />
+                        </template>
+                        删除
+                    </Button>
+                </Space>
+            </template>
+
+            <template #action="{ row }">
+                <Space>
+                    <Button theme="primary" variant="text" size="small" @click="handleEdit(row)">
+                        编辑
+                    </Button>
+                    <Button theme="danger" variant="text" size="small" @click="handleDelete(row)">
+                        删除
+                    </Button>
+                </Space>
+            </template>
+        </Grid>
+
+        <FormData ref="formDataRef" @add="add" @edit="edit" />
+    </Page>
+</template>
+
+<%
+let hasBoolean = false;
+let hasDate = false;
+for (const item of fields) {
+    if (item.type === 'boolean') hasBoolean = true;
+    if (item.type === 'Date') hasDate = true;
+}
+%>
+<script setup lang="ts">
+import { ref } from 'vue';
+import {
+    Button,
+    Form,
+    FormItem,
+    Icon,
+    Input,
+    Space,
+    DialogPlugin,
+<% if (hasDate) { %>    DatePicker,
+<% } %><% if (hasBoolean) { %>    Option,
+    Select,
+<% } %>} from 'tdesign-vue-next';
+import { Page } from '@vben/common-ui';
+import { message } from '#/adapter/tdesign';
+import { <%- useHookName %> } from '#/composables/<%- useHookName %>';
+import type { <%- namespace %> } from '#/api/core';
+import FormData from './formData.vue';
+
+type RowType = <%- namespace %>.<%- itemName %>;
+
+const {
+    Grid,
+    queryParams,
+    add,
+    edit,
+    search,
+    reset,
+    remove,
+    removeSelected,
+} = <%- useHookName %>();
+
+const formDataRef = ref<InstanceType<typeof FormData> | null>(null);
+
+function handleSearch() {
+    search();
+}
+
+function handleReset() {
+    reset();
+}
+
+function handleAdd() {
+    formDataRef.value?.open();
+}
+
+function handleEdit(row: RowType) {
+    formDataRef.value?.open(row);
+}
+
+function handleDelete(row: RowType) {
+    const confirmDialog = DialogPlugin.confirm({
+        header: '确认删除',
+        body: `确定要删除「${row.id}」吗？`,
+        confirmBtn: '删除',
+        cancelBtn: '取消',
+        onConfirm: async () => {
+            try {
+                await remove([row.id]);
+                message.success('删除成功');
+            } finally {
+                confirmDialog.destroy();
+            }
+        },
+        onClose: () => {
+            confirmDialog.destroy();
+        },
+    });
+}
+
+function handleRemoveSelected() {
+    removeSelected();
+}
+
+</script>
+
+<style scoped></style>

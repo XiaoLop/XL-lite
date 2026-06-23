@@ -1,0 +1,84 @@
+import { requestClient } from '#/api/request';
+
+export namespace <%- namespace %> {
+
+  export interface <%- itemName %> {
+
+    id: number;
+    <% fields.forEach(function(field) { %>
+    <%- field.name %>: <%- field.type === 'Date' ? 'string' : field.type %>;
+    <% }) %>
+    createdAt: string;
+
+    updatedAt: string;
+
+  }
+
+  /** 查询列表响应 */
+  export interface <%- responseName %> {
+    total: number;
+    list: <%- itemName %>[];
+  }
+
+  /** 创建配置参数 */
+  export interface <%- createParamsName %> {
+    <% fields.forEach(function(field) { %>
+    <%- field.name %><%- field.required ? '' : '?' %>: <%- field.type === 'Date' ? 'string' : field.type %>;
+    <% }) %>
+  }
+
+  /** 更新配置参数 */
+  export interface <%- updateParamsName %> extends Partial<<%- createParamsName %>> {
+    id: number;
+  }
+
+  /** 查询配置列表参数 */
+  export interface <%- quryParamsName %> {
+
+    pageNum: number;
+
+    pageSize: number;
+    <% fields.forEach(function(field) { %>
+    <%- field.name %>?: <%- field.type === 'Date' ? 'string' : field.type %>;
+    <% }) %>
+  }
+}
+
+/**
+ * 查询 <%- name %> 列表
+ */
+export async function <%- getListApiName %>(params?: <%- namespace %>.<%- quryParamsName %>) {
+  return requestClient.get<<%- namespace %>.<%- responseName %>>('/<%- name %>', {
+    params,
+  });
+}
+
+/**
+ * 查询 <%- name %> 详情
+ */
+export async function <%- getDetailApiName %>(id: number) {
+  return requestClient.get<<%- namespace %>.<%- itemName %>>(`/<%- name %>/${id}`);
+}
+
+/**
+ * 创建 <%- name %> 
+ */
+export async function <%- createApiName %>(data: <%- namespace %>.<%- createParamsName %>) {
+  return requestClient.post('/<%- name %>', data);
+}
+
+/**
+ * 更新 <%- name %> 
+ */
+export async function <%- updateApiName %>(data: <%- namespace %>.<%- updateParamsName %>) {
+  return requestClient.post(`/<%- name %>/${data.id}`, data);
+}
+
+/**
+ * 删除 <%- name %> 
+ */
+export async function <%- deleteApiName %>(ids: number[]) {
+  return requestClient.delete('/<%- name %>', {
+    data: ids,
+  });
+}

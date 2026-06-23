@@ -1,0 +1,159 @@
+import { reactive } from 'vue';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import type { <%- namespace %> } from '#/api/core';
+import {
+  <%- createApiName %>,
+  <%- deleteApiName %>,
+  <%- getListApiName %>,
+  <%- updateApiName %>,
+} from '#/api/core';
+import { message } from '#/adapter/tdesign';
+
+type RowType = <%- namespace %>.<%- itemName %>;
+
+type QueryParams = Omit<<%- namespace %>.<%- quryParamsName %>, 'pageNum' | 'pageSize'>;
+
+export function <%- useHookName %>() {
+  const queryParams = reactive<QueryParams>({});
+
+  const gridOptions: VxeGridProps<RowType> = {
+    columns: [
+      { type: 'checkbox', width: 60, fixed: 'left' },
+      { field: 'id', title: 'ID', width: 80 },
+      <%- (fields || []).filter(field => field.name && !['id', 'createdAt', 'updatedAt'].includes(field.name)).map(field => `      { field: '${field.name}', title: '${field.comment || field.name}', minWidth: 120 },`).join('\n') %>
+      { field: 'createdAt', title: '创建时间', minWidth: 160 },
+      { field: 'updatedAt', title: '更新时间', minWidth: 160 },
+      {
+        title: '操作',
+        width: 200,
+        fixed: 'right',
+        slots: { default: 'action' },
+      },
+    ],
+    rowConfig: {
+      keyField: 'id',
+    },
+    pagerConfig: {
+      enabled: true,
+      pageSize: 20,
+    },
+    proxyConfig: {
+      enabled: true,
+      autoLoad: true,
+      ajax: {
+        query: async ({ page }) => {
+          const res = await <%- getListApiName %>({
+            pageNum: page?.currentPage,
+            pageSize: page?.pageSize,
+            ...queryParams,
+          });
+          return {
+            items: res.list,
+            total: res.total,
+          };
+        },
+      },
+    },
+    loading: false,
+    stripe: true,
+    toolbarConfig: {
+      custom: true,
+      refresh: true,
+      zoom: true,
+    },
+  };
+
+  const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
+
+  /**
+   * 触发搜索：根据当前 queryParams 重新加载表格
+   */
+  async function search() {
+    await gridApi.query();
+  }
+
+  /**
+   * 重置查询条件并重新加载表格
+   */
+  async function reset() {
+    (Object.keys(queryParams) as Array<keyof QueryParams>).forEach((key) => {
+      queryParams[key] = undefined;
+    });
+    await gridApi.query();
+  }
+
+  /**
+   * 新增 <%- name %> 
+   */
+  async function add(data: <%- namespace %>.<%- createParamsName %>) {
+    try {
+      gridApi.setLoading(true);
+      const res = await <%- createApiName %>(data);
+      await gridApi.reload();
+      return res;
+    } finally {
+      gridApi.setLoading(false);
+    }
+  }
+
+  /**
+   * 编辑 <%- name %> 
+   */
+  async function edit(data: <%- namespace %>.<%- updateParamsName %>) {
+    try {
+      gridApi.setLoading(true);
+      const res = await <%- updateApiName %>(data);
+      await gridApi.reload();
+      return res;
+    } finally {
+      gridApi.setLoading(false);
+    }
+  }
+
+  /**
+   * 删除 <%- name %> 
+   */
+  async function remove(ids: number[]) {
+    try {
+      gridApi.setLoading(true);
+      const res = await <%- deleteApiName %>(ids);
+      await gridApi.reload();
+      return res;
+    } finally {
+      gridApi.setLoading(false);
+    }
+  }
+
+  /**
+   * 获取当前选中的行 ID 列表
+   */
+  function getSelectedIds(): number[] {
+    const records = gridApi.grid.getCheckboxRecords?.() || [];
+    return records.map((row: RowType) => row.id);
+  }
+
+  /**
+   * 批量删除选中的配置
+   */
+  async function removeSelected() {
+    const ids = getSelectedIds();
+    if (ids.length === 0) {
+      message.warning('请至少选择一条记录');
+      return;
+    }
+    return remove(ids);
+  }
+
+  return {
+    Grid,
+    gridApi,
+    queryParams,
+    search,
+    reset,
+    add,
+    edit,
+    remove,
+    removeSelected,
+  };
+}

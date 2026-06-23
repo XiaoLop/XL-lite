@@ -1,0 +1,160 @@
+<template>
+  <Drawer class="w-120" :title="title">
+    <Form
+      ref="formRef"
+      :data="formData"
+      :rules="rules"
+      label-width="100px"
+      reset-type="initial"
+      @submit="handleSubmit"
+    >
+      <% for (const item of fields) { %>
+        <% if (item.type === 'boolean') { %>
+        <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+            <Select v-model="formData.<%- item.name %>" placeholder="请选择<%- item.comment || item.name %>" clearable>
+                <Option :value="true" label="启用" />
+                <Option :value="false" label="禁用" />
+            </Select>
+        </FormItem>
+        <% } else if (item.type === 'number') { %>
+        <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+            <Input type="number" v-model="formData.<%- item.name %>" placeholder="请输入<%- item.comment || item.name %>" clearable />
+        </FormItem>
+        <% } else if (item.type === 'Date') { %>
+        <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+            <DatePicker v-model="formData.<%- item.name %>" placeholder="请选择<%- item.comment || item.name %>" clearable />
+        </FormItem>
+        <% } else { %>
+        <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
+            <Input v-model="formData.<%- item.name %>" placeholder="请输入<%- item.comment || item.name %>" clearable />
+        </FormItem>
+        <% } %>
+      <% } %>
+    </Form>
+    <template #footer>
+      <Space>
+        <Button theme="primary" @click="handleSave">确 定</Button>
+        <Button theme="default" variant="outline" @click="handleClose">取 消</Button>
+      </Space>
+    </template>
+  </Drawer>
+</template>
+
+<%
+let hasBoolean = false;
+let hasDate = false;
+for (const item of fields) {
+    if (item.type === 'boolean') hasBoolean = true;
+    if (item.type === 'Date') hasDate = true;
+}
+%>
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useVbenDrawer } from '@vben/common-ui';
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Space,
+<% if (hasDate) { %>    DatePicker,
+<% } %><% if (hasBoolean) { %>    Option,
+    Select,
+<% } %>} from 'tdesign-vue-next';
+import type { FormInstanceFunctions, SubmitContext, FormRule } from 'tdesign-vue-next';
+import type { <%- namespace %> } from '#/api/core';
+
+const emit = defineEmits<{
+  add: [<%- namespace %>.<%- createParamsName %>];
+  edit: [<%- namespace %>.<%- updateParamsName %>];
+}>();
+
+const [Drawer, drawerApi] = useVbenDrawer({
+  onClosed: () => {
+    resetForm();
+  },
+});
+
+const formRef = ref<FormInstanceFunctions | null>(null);
+const isEdit = ref(false);
+const editId = ref<number | null>(null);
+
+const title = computed(() => (isEdit.value ? '编辑<%- name %>' : '新增<%- name %>'));
+
+const formData = ref<<%- namespace %>.<%- createParamsName %>>({
+  <% for (const item of fields) { %>
+  <%- item.name %>: <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
+  <% } %>
+});
+
+const rules: Record<string, FormRule[]> = {
+  <% for (const item of fields) { %>
+  <%- item.name %>: [{ required: <%- item.required %>, message: '请输入<%- item.comment %>', type: 'error' }],
+  <% } %>
+};
+
+function resetForm() {
+  formData.value = {
+    <% for (const item of fields) { %>
+    <%- item.name %>: <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
+    <% } %>
+  };
+  isEdit.value = false;
+  editId.value = null;
+  formRef.value?.clearValidate?.();
+}
+
+function open(record?: <%- namespace %>.<%- itemName %>) {
+  if (record) {
+    isEdit.value = true;
+    editId.value = record.id;
+    formData.value = {
+      <% for (const item of fields) { %>
+      <%- item.name %>: record.<%- item.name %> || <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
+      <% } %>
+    };
+  } else {
+    isEdit.value = false;
+    editId.value = null;
+  }
+  drawerApi.open();
+}
+
+async function handleSubmit({ validateResult }: SubmitContext) {
+  if (validateResult !== true) return;
+
+  try {
+    drawerApi.setState({ loading: true });
+    const payload = {
+      ...formData.value
+    };
+    if (isEdit.value && editId.value) {
+      emit(
+        'edit',
+        {
+        id: editId.value,
+        ...payload,
+      });
+    } else {
+      emit('add',payload);
+    }
+    drawerApi.close();
+  } finally {
+    drawerApi.setState({ loading: false });
+  }
+}
+
+function handleClose() {
+  drawerApi.close();
+}
+
+function handleSave() {
+  formRef.value?.submit?.();
+}
+
+defineExpose({
+  open,
+});
+</script>
+
+<style scoped></style>
