@@ -14,20 +14,6 @@
 - 后端需要 `.env` 文件。将 `apps/app-server/.env.example` 复制为 `apps/app-server/.env` 并填写凭据。
 - Docker 快捷方式：在根目录执行 `pnpm docker:up` 通过 `apps/app-server/docker-compose.yml` 启动 postgres + redis。
 
-## 开发命令
-
-除非另有说明，否则请在对应的工作区根目录运行：
-
-- `pnpm dev:server`（根目录）— 启动后端（不监听，`nest start`）。
-- `pnpm dev:admin`（根目录）— 启动前端 Vite 开发服务器（默认端口 5999，来自 `.env.development`）。
-- `pnpm start:dev`（在 `apps/app-server` 中）— 后端带监听/热重载。
-- `pnpm dev`（在 `apps/app-admin` 中）— 同上，前端开发服务器。
-- `pnpm module`（根目录）— 运行脚手架 CLI（`scripts/generated`）。根据 CLI 参数生成实体、模块和 UI。
-- `pnpm test`（在 `apps/app-server` 中）— 单元测试（Jest + ts-jest）。
-- `pnpm test:e2e`（在 `apps/app-server` 中）— 端到端测试（Jest，配置位于 `test/jest-e2e.json`）。
-- `pnpm typecheck`（在 `apps/app-admin` 中）— `vue-tsc --noEmit --skipLibCheck`。
-- `pnpm build`（在 `apps/app-server` 中）— `nest build`（先通过 `nest-cli.json` 删除 `dist`）。
-- `pnpm build`（在 `apps/app-admin` 中）— Vite 生产构建。
 
 ## 架构与连接
 
@@ -56,10 +42,3 @@
 - `packages/effects/*`：功能级包（access、common-ui、hooks、layouts、plugins、request）。
 - `internal/*`：构建工具和共享配置（eslint-config、tsconfig、vite-config、tailwind-config、node-utils、lint-configs）。
 - `scripts/*`：代码生成 / 脚手架工具（`scripts/generated` 是 CLI）。
-
-## Kilo / MCP 配置
-
-`.kilo/kilo.json` 注册了两个本地 MCP 服务器：
-
-- `API 文档`: 从 `http://localhost:3000/doc/json` 读取
-- `tdesign-mcp-server`: TDesign 组件文档 MCP
