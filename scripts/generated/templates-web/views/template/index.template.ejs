@@ -2,7 +2,6 @@
     <Page>
         <template #title>
             <Form layout="inline" :data="queryParams" reset-type="initial" class="py-2">
-
                 <% for (const item of fields) { %>
                 <% if (item.type === 'boolean') { %>
                 <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
@@ -25,7 +24,6 @@
                 </FormItem>
                 <% } %>
                 <% } %>
-
                 <FormItem>
                     <Space>
                         <Button theme="primary" @click="handleSearch">
