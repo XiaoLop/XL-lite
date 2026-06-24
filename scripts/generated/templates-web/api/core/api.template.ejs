@@ -36,11 +36,13 @@ export namespace <%- namespace %> {
   export interface <%- quryParamsName %> {
 
     pageNum: number;
-
     pageSize: number;
+    id?: number;
     <% fields.forEach(function(field) { %>
-    <%- field.name %>?: <%- field.type === 'Date' ? 'string' : field.type %>;
-    <% }) %>
+    <%- field.name %>?: <%- field.type === 'Date' ? 'string' : field.type -%>;
+    <% }) -%>
+    updatedAt?: string;
+    createdAt?: string;
   }
 }
 

@@ -72,8 +72,6 @@ function getTemplateGlobalArgs(modelName: string, options: TemplateEntityOptions
         updateDtoName: toCamelCase(`Update ${modelName} Dto`),
         paginationDtoName: toCamelCase(`${modelName} PaginationDto`),
         responseDtoName: toCamelCase(`${modelName} ResponseDto`),
-        isNoId: options.isNoId,
-        isNoTime: options.isNoTime,
         fields: options.fields
     }
 }

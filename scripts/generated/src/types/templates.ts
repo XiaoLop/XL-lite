@@ -15,8 +15,6 @@ export type TemplateGlobalArgs = {
     paginationDtoName: string;
     responseDtoName: string;
 
-    isNoId: boolean;
-    isNoTime: boolean;
     fields: Field[];
 }
 
@@ -70,7 +68,5 @@ export interface TemplateDtoOptions {
 
 
 export interface TemplateEntityOptions {
-    isNoId: boolean;
-    isNoTime: boolean;
     fields: Field[];
 }

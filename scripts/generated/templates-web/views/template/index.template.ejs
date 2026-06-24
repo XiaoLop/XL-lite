@@ -2,6 +2,10 @@
     <Page>
         <template #title>
             <Form layout="inline" :data="queryParams" reset-type="initial" class="py-2">
+        
+                <FormItem label="ID" name="id">
+                    <Input v-model="queryParams.id" placeholder="请输入ID" clearable />
+                </FormItem>
         <% for (const item of fields) { -%>
             <% if (item.type === 'boolean') { %>
                 <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
@@ -24,6 +28,13 @@
                 </FormItem>
             <% } -%>
         <% } %>
+                <FormItem label="更新时间" name="updatedAt">
+                    <DatePicker v-model="queryParams.updatedAt" placeholder="请输入更新时间" clearable />
+                </FormItem>
+
+                <FormItem label="创建时间" name="createdAt">
+                    <DatePicker v-model="queryParams.createdAt" placeholder="请输入创建时间" clearable />
+                </FormItem>
                 <FormItem>
                     <Space>
                         <Button theme="primary" @click="handleSearch">
@@ -95,8 +106,8 @@ import {
     Input,
     Space,
     DialogPlugin,
-<% if (hasDate) { %>    DatePicker,
-<% } %><% if (hasBoolean) { %>    Option,
+    DatePicker
+<% if (hasBoolean) { %>    Option,
     Select,
 <% } %>} from 'tdesign-vue-next';
 import { Page } from '@vben/common-ui';

@@ -13,7 +13,6 @@ if (fields) {
             else if (itemType === 'boolean') neededDecorators.add('IsBoolean');
             else neededDecorators.add('IsString');
         } else if (type === 'number') {
-            neededDecorators.add('Type');
             neededDecorators.add('IsNumber');
         } else if (type === 'boolean') {
             neededDecorators.add('IsBoolean');
@@ -31,12 +30,14 @@ import { <%- imports.join(', ') %> } from 'class-validator';
 <% } %>
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { EmptyToUndefined } from 'common/decorators/empty-to-undefined.decorator';
+import { Type } from 'class-transformer';
 
 // 查询参数
 export class <%- queryDtoName %> {
     @ApiProperty({ description: 'id', required: false })
     @EmptyToUndefined()
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     id?: number;
 

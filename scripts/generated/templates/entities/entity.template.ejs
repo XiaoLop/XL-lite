@@ -12,10 +12,8 @@ import { <%= typeormImports.join(', ') %> } from 'typeorm';
 
 @Entity()
 export class <%= entityName %> {
-<% if (!isNoId) { %>
     @PrimaryGeneratedColumn()
     id!: number;
-<% } %>
 
 <% if (typeof fields !== 'undefined' && fields) { 
 fields.forEach(function(field) {
@@ -48,13 +46,9 @@ fields.forEach(function(field) {
     <%- field.name %><%- optionalMark %>: <%- field.type %><%- tsComment %>
 <% }); 
 } %>
-
-<% if (!isNoTime) { %>
-
     @CreateDateColumn()
     createdAt!: Date;
 
     @UpdateDateColumn()
     updatedAt!: Date;
-<% } %>
 }

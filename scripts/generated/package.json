@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "tsx ./src/main.ts",
-    "module": "tsx ./src/main.ts module"
+    "module": "tsx ./src/main.ts module",
+    "admin": "tsx ./src/main.ts admin"
   },
   "keywords": [],
   "author": "",

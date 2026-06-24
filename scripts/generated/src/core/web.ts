@@ -1,4 +1,3 @@
-import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -8,24 +7,6 @@ import config from '../config';
 import { toCamelCase } from '../utils/tools';
 import type { TemplateGlobalOptions } from '../types/templates-web';
 import type { Field } from "../types/entity";
-
-function lintFixCode(modelName: string) {
-    return new Promise((resolve, reject) => {
-        const child = spawn(
-            'npx',
-            ['eslint', `src/modules/${modelName}/**/*.ts`, '--fix'],
-            {
-                cwd: config.serverPath,
-                shell: true,
-                stdio: 'inherit',
-            }
-        );
-
-        child.on('close', (code) => {
-            code === 0 ? resolve(null) : reject(new Error(`exit: ${code}`));
-        })
-    })
-}
 
 // 生成模板参数
 function getTemplateGlobalArgs(webName: string, fields: Field[]): TemplateGlobalOptions {
@@ -122,11 +103,11 @@ function writeAllTemplate(wirtePath: string, templateArgs: TemplateGlobalOptions
 
 }
 
-export default async function generatedWeb(webName: string, fields: Field[]) {
+export default async function generatedAdmin(adminName: string, fields: Field[]) {
     writeAllTemplate(
         path.join(config.webPath, 'src'),
-        getTemplateGlobalArgs(webName, fields)
+        getTemplateGlobalArgs(adminName, fields)
     );
     // await lintFixCode(modelName)
-    console.log(`${webName} 模块生成成功`);
+    console.log(`${adminName} 后台界面生成成功`);
 }
