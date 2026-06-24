@@ -9,6 +9,7 @@ import {
   <%- updateApiName %>,
 } from '#/api/core';
 import { message } from '#/adapter/tdesign';
+import { formatDate } from '#/utils/formatDate';
 
 type RowType = <%- namespace %>.<%- itemName %>;
 
@@ -49,7 +50,11 @@ export function <%- useHookName %>() {
             ...queryParams,
           });
           return {
-            items: res.list,
+            items: res.list.map((item)=> ({
+              ...item,
+              createdAt: formatDate(item.createdAt),
+              updatedAt: formatDate(item.updatedAt),
+            })),
             total: res.total,
           };
         },
