@@ -13,6 +13,7 @@ if (fields) {
             else if (itemType === 'boolean') neededDecorators.add('IsBoolean');
             else neededDecorators.add('IsString');
         } else if (type === 'number') {
+            neededDecorators.add('Type');
             neededDecorators.add('IsNumber');
         } else if (type === 'boolean') {
             neededDecorators.add('IsBoolean');
@@ -62,6 +63,7 @@ _%>
     @IsString({ each: true })
 <%   } -%>
 <% } else if (itemType === 'number') { -%>
+    @Type(() => Number)
     @IsNumber()
 <% } else if (itemType === 'boolean') { -%>
     @IsBoolean()

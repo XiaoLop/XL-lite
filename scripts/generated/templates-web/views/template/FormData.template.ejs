@@ -8,7 +8,7 @@
       reset-type="initial"
       @submit="handleSubmit"
     >
-      <% for (const item of fields) { %>
+      <% for (const item of fields) { -%>
         <% if (item.type === 'boolean') { %>
         <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
             <Select v-model="formData.<%- item.name %>" placeholder="请选择<%- item.comment || item.name %>" clearable>
@@ -28,7 +28,7 @@
         <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
             <Input v-model="formData.<%- item.name %>" placeholder="请输入<%- item.comment || item.name %>" clearable />
         </FormItem>
-        <% } %>
+        <% } -%>
       <% } %>
     </Form>
     <template #footer>
@@ -82,22 +82,22 @@ const editId = ref<number | null>(null);
 const title = computed(() => (isEdit.value ? '编辑<%- name %>' : '新增<%- name %>'));
 
 const formData = ref<<%- namespace %>.<%- createParamsName %>>({
-  <% for (const item of fields) { %>
+  <% for (const item of fields) { -%>
   <%- item.name %>: <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
-  <% } %>
+  <% } -%>
 });
 
 const rules: Record<string, FormRule[]> = {
-  <% for (const item of fields) { %>
+  <% for (const item of fields) { -%>
   <%- item.name %>: [{ required: <%- item.required %>, message: '请输入<%- item.comment %>', type: 'error' }],
-  <% } %>
+  <% } -%>
 };
 
 function resetForm() {
   formData.value = {
-    <% for (const item of fields) { %>
+    <% for (const item of fields) { -%>
     <%- item.name %>: <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
-    <% } %>
+    <% } -%>
   };
   isEdit.value = false;
   editId.value = null;
@@ -109,9 +109,9 @@ function open(record?: <%- namespace %>.<%- itemName %>) {
     isEdit.value = true;
     editId.value = record.id;
     formData.value = {
-      <% for (const item of fields) { %>
+      <% for (const item of fields) { -%>
       <%- item.name %>: record.<%- item.name %> || <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
-      <% } %>
+      <% } -%>
     };
   } else {
     isEdit.value = false;

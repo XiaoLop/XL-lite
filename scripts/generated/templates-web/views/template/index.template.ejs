@@ -2,8 +2,8 @@
     <Page>
         <template #title>
             <Form layout="inline" :data="queryParams" reset-type="initial" class="py-2">
-                <% for (const item of fields) { %>
-                <% if (item.type === 'boolean') { %>
+        <% for (const item of fields) { -%>
+            <% if (item.type === 'boolean') { %>
                 <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
                     <Select v-model="queryParams.<%- item.name %>" placeholder="请选择<%- item.comment || item.name %>" clearable>
                         <Option :value="true" label="启用" />
@@ -22,8 +22,8 @@
                 <FormItem label="<%- item.comment || item.name %>" name="<%- item.name %>">
                     <Input v-model="queryParams.<%- item.name %>" placeholder="请输入<%- item.comment || item.name %>" clearable />
                 </FormItem>
-                <% } %>
-                <% } %>
+            <% } -%>
+        <% } %>
                 <FormItem>
                     <Space>
                         <Button theme="primary" @click="handleSearch">

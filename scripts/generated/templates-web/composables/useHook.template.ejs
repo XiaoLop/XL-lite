@@ -21,7 +21,7 @@ export function <%- useHookName %>() {
     columns: [
       { type: 'checkbox', width: 60, fixed: 'left' },
       { field: 'id', title: 'ID', width: 80 },
-      <%- (fields || []).filter(field => field.name && !['id', 'createdAt', 'updatedAt'].includes(field.name)).map(field => `      { field: '${field.name}', title: '${field.comment || field.name}', minWidth: 120 },`).join('\n') %>
+<%- (fields || []).filter(field => field.name && !['id', 'createdAt', 'updatedAt'].includes(field.name)).map(field => `      { field: '${field.name}', title: '${field.comment || field.name}', minWidth: 120 },`).join('\n') %>
       { field: 'createdAt', title: '创建时间', minWidth: 160 },
       { field: 'updatedAt', title: '更新时间', minWidth: 160 },
       {
