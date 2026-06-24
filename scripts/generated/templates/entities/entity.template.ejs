@@ -21,7 +21,11 @@ fields.forEach(function(field) {
     }
     
     if (field.default && field.default.trim() !== '') {
-        options.push('default: ' + field.default);
+        var defaultVal = field.default.trim();
+        if (!/^-?\d+(\.\d+)?$/.test(defaultVal) && defaultVal !== 'true' && defaultVal !== 'false' && defaultVal !== 'null') {
+            defaultVal = "'" + defaultVal.replace(/'/g, "\\'") + "'";
+        }
+        options.push('default: ' + defaultVal);
     }
     
     if (field.comment && field.comment.trim() !== '') {
