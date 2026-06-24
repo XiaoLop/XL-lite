@@ -3,21 +3,14 @@
 ## 仓库概览
 
 基于 pnpm workspace 管理的全栈管理后台 monorepo（Vue 3 + NestJS）。
+
 - `apps/app-admin`: 基于 **vbenjs/vue-vben-admin** 的 Vue 3 前端。使用 TDesign、Tailwind CSS、Pinia、Vue Router 5。
 - `apps/app-server`: 基于 NestJS 的后端，使用 TypeORM、PostgreSQL、Redis、BullMQ、JWT/Passport 认证。
-
-## 环境与安装
-
-- Node.js >= 20.x，**pnpm 10.13.1**（由 `packageManager` 字段强制指定）。
-- 后端需要 PostgreSQL >= 15.x 和 Redis >= 7.x。
-- 在根目录执行 `pnpm install`。
-- 后端需要 `.env` 文件。将 `apps/app-server/.env.example` 复制为 `apps/app-server/.env` 并填写凭据。
-- Docker 快捷方式：在根目录执行 `pnpm docker:up` 通过 `apps/app-server/docker-compose.yml` 启动 postgres + redis。
-
 
 ## 架构与连接
 
 ### 后端（`apps/app-server`）
+
 - **全局路由前缀**：`/api`。Swagger UI 在 `/doc`，OpenAPI JSON 在 `/doc/json`。
 - **TypeORM**：开发环境 `synchronize: true`（自动生成表结构）。**请勿在生产环境开启。**
 - **种子数据**：`SeedService` 在应用启动时自动运行，创建超级管理员和初始菜单。无需手动执行种子命令。
@@ -28,6 +21,7 @@
 - **TSConfig 特殊配置**：`noImplicitAny: false`、`strictBindCallApply: false`、`typeRoots: ["src/types"]`。请勿假设启用了严格 TypeScript 设置。
 
 ### 前端（`apps/app-admin`）
+
 - **导入别名**：`#/*` 映射到 `./src/*`（在 `tsconfig.json` 和 `package.json` 的 imports 中定义）。
 - **API 代理**：`/api` 在开发环境中代理到 `http://localhost:3000/api`（`vite.config.ts`）。
 - **动态路由**：后端返回菜单树；前端在 `src/router/guard.ts`（`setupAccessGuard`）中动态生成可访问路由。
