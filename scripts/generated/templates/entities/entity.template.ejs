@@ -1,14 +1,11 @@
 
-<% 
-// 自动计算 typeorm 的基础导入
-var typeormImports = ['Entity', 'Column'];
-if (!isNoId) typeormImports.push('PrimaryGeneratedColumn');
-if (!isNoTime) {
-    typeormImports.push('CreateDateColumn');
-    typeormImports.push('UpdateDateColumn');
-}
-%>
-import { <%= typeormImports.join(', ') %> } from 'typeorm';
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class <%= entityName %> {

@@ -1,5 +1,5 @@
 ---
-name: generated-nest-module
+name: generated-code
 description: 一键生成 Nest 模块与前端界面，快速开发功能
 ---
 
@@ -25,6 +25,8 @@ description: 一键生成 Nest 模块与前端界面，快速开发功能
 | `-f, --fields` | 否 | 字段列表，格式：`字段名:类型:必填:默认值:注释` |
 
 **字段类型**：`string` | `number` | `boolean` | `Date`
+
+> **注意**：字段列表中无需添加 `id`、`createdAt`（创建时间）和 `updatedAt`（修改时间），这些字段在生成时会自动默认添加。
 
 字段间用逗号分隔，若某部分为空保留分号占位（如 `title:string:true::商品标题`）。
 
