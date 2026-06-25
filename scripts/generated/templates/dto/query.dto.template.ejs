@@ -11,11 +11,14 @@ if (fields) {
             const itemType = type.replace('[]', '');
             if (itemType === 'number') neededDecorators.add('IsNumber');
             else if (itemType === 'boolean') neededDecorators.add('IsBoolean');
+            else if (itemType === 'date') neededDecorators.add('IsDate');
             else neededDecorators.add('IsString');
         } else if (type === 'number') {
             neededDecorators.add('IsNumber');
         } else if (type === 'boolean') {
             neededDecorators.add('IsBoolean');
+        } else if (type === 'date') {
+            neededDecorators.add('IsDate');
         } else {
             neededDecorators.add('IsString');
         }
@@ -47,8 +50,8 @@ export class <%- queryDtoName %> {
         const isArray = rawType.endsWith('[]');
         const itemType = isArray ? rawType.replace('[]', '') : rawType;
         const tsType = isArray
-            ? (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : 'string') + '[]'
-            : (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : 'string');
+            ? (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : itemType === 'date' ? 'Date' : 'string') + '[]'
+            : (itemType === 'number' ? 'number' : itemType === 'boolean' ? 'boolean' : itemType === 'date' ? 'Date' : 'string');
 _%>
 
     @ApiProperty({ description: '<%- field.comment || field.name %>', required: false })
@@ -60,6 +63,8 @@ _%>
     @IsNumber({}, { each: true })
 <%   } else if (itemType === 'boolean') { -%>
     @IsBoolean({ each: true })
+<%   } else if (itemType === 'date') { -%>
+    @IsDate({ each: true })
 <%   } else { -%>
     @IsString({ each: true })
 <%   } -%>
@@ -68,6 +73,8 @@ _%>
     @IsNumber()
 <% } else if (itemType === 'boolean') { -%>
     @IsBoolean()
+<% } else if (itemType === 'date') { -%>
+    @IsDate()
 <% } else { -%>
     @IsString()
 <% } -%>
