@@ -71,7 +71,14 @@
                     </Button>
                 </Space>
             </template>
-
+    <% for (const item of fields) { %>
+        <% if (item.type === 'boolean') { %>
+            <template #<%- item.name %>="{ row }">
+                    <Tag v-if="row.<%- item.name %>" theme="success" >启动</Tag>
+                    <Tag v-else theme="danger" >禁用</Tag>
+            </template>
+        <% } -%>
+    <% } %>
             <template #action="{ row }">
                 <Space>
                     <Button theme="primary" variant="text" size="small" @click="handleEdit(row)">
@@ -87,7 +94,6 @@
         <FormData ref="formDataRef" @add="add" @edit="edit" />
     </Page>
 </template>
-
 <%
 let hasBoolean = false;
 let hasDate = false;
@@ -109,6 +115,7 @@ import {
     DatePicker,
 <% if (hasBoolean) { %>    Option,
     Select,
+    Tag,
 <% } %>} from 'tdesign-vue-next';
 import { Page } from '@vben/common-ui';
 import { message } from '#/adapter/tdesign';
