@@ -17,7 +17,7 @@ import { LoginDto, LoginResultDto } from './dto/login.dto';
 import { Public } from 'common/decorators/public.decorator';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { ApiResult } from 'common/decorators/api-result.decorator';
-import type { User } from 'modules/user/entities/user.entity';
+import type { User } from 'modules/base/user/entities/user.entity';
 import { safeEval } from 'common/utils/tools';
 
 interface RequestWithUser extends Request {

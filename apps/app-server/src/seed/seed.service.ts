@@ -1,6 +1,6 @@
 import { Injectable, OnApplicationBootstrap, Logger } from '@nestjs/common';
-import { MenuService } from 'modules/menu/menu.service';
-import { UserService } from 'modules/user/user.service';
+import { MenuService } from 'modules/base/menu/menu.service';
+import { UserService } from 'modules/base/user/user.service';
 
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {

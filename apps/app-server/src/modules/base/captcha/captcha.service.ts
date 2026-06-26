@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RedisService } from 'modules/redis/redis.service';
+import { RedisService } from 'modules/base/redis/redis.service';
 import * as svgCaptcha from 'svg-captcha';
 import crypto from 'crypto';
 

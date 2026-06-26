@@ -9,7 +9,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { PUBLIC_KEY } from '../decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
-import type { AccessJwtPayload } from 'modules/auth/types/auth.type';
+import type { AccessJwtPayload } from 'modules/base/auth/types/auth.type';
 import type { Request } from 'express';
 
 @Injectable()

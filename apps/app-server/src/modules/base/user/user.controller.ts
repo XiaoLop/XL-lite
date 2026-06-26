@@ -14,7 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiResult } from 'common/decorators/api-result.decorator';
 import { UserInfoDto } from './dto/user-info.dto';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import type { AccessJwtPayload } from 'modules/auth/types/auth.type';
+import type { AccessJwtPayload } from 'modules/base/auth/types/auth.type';
 
 interface RequestWithUser extends Request {
     user: AccessJwtPayload;

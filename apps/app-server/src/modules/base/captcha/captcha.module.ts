@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CaptchaService } from './captcha.service';
-import { RedisModule } from 'modules/redis/redis.module';
+import { RedisModule } from 'modules/base/redis/redis.module';
 import { CaptchaController } from './captcha.controller';
 
 @Module({

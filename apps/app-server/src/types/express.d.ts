@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AccessJwtPayload } from 'modules/auth/types/auth.type';
+import { AccessJwtPayload } from 'modules/base/auth/types/auth.type';
 
 declare namespace Express {
     export interface Request {

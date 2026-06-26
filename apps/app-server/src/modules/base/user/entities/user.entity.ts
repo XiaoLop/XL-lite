@@ -8,7 +8,7 @@ import {
     JoinTable,
 } from 'typeorm';
 import { UserStatus } from '../types/user.type';
-import { Role } from 'modules/role/entities/role.entity';
+import { Role } from 'modules/base/role/entities/role.entity';
 
 @Entity()
 export class User {

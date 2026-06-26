@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 // 全局守卫
 import { GlobalGuard } from 'common/guards/global.guard';
@@ -11,13 +12,14 @@ import { PermissionGuard } from 'common/guards/permission.guard';
 import { AuthGuard } from 'common/guards/auth.guard';
 
 import { JwtModule } from '@nestjs/jwt';
-import { RedisModule } from './modules/redis/redis.module';
-import { PermissionModule } from './modules/permission/permission.module';
-import { RoleModule } from './modules/role/role.module';
-import { UserModule } from './modules/user/user.module';
-import { MenuModule } from './modules/menu/menu.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { CaptchaModule } from './modules/captcha/captcha.module';
+import { RedisModule } from './modules/base/redis/redis.module';
+import { PermissionModule } from './modules/base/permission/permission.module';
+import { RoleModule } from './modules/base/role/role.module';
+import { UserModule } from './modules/base/user/user.module';
+import { MenuModule } from './modules/base/menu/menu.module';
+import { AuthModule } from './modules/base/auth/auth.module';
+import { TasksModule } from 'modules/base/tasks/tasks.module';
+import { CaptchaModule } from './modules/base/captcha/captcha.module';
 import { SeedModule } from './seed/seed.module';
 
 @Module({
@@ -49,10 +51,13 @@ import { SeedModule } from './seed/seed.module';
             },
         }),
 
+        ScheduleModule.forRoot(),
+
         JwtModule.register({
             secret: process.env.JWT_ACCESS_SECRET,
         }),
         RedisModule,
+        TasksModule,
         MenuModule,
         AuthModule,
         UserModule,
