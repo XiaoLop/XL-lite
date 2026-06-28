@@ -110,7 +110,7 @@ function open(record?: <%- namespace %>.<%- itemName %>) {
     editId.value = record.id;
     formData.value = {
       <% for (const item of fields) { -%>
-      <%- item.name %>: record.<%- item.name %> || <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
+      <%- item.name %>: record.<%- item.name %> ?? <%- item.type === 'string' ? "''" : item.type === 'number' ? '1' : item.type === 'boolean' ? 'true' : "''" %>,
       <% } -%>
     };
   } else {
