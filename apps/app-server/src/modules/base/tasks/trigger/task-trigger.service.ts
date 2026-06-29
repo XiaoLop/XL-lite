@@ -16,7 +16,6 @@ export class TaskTrigger {
     @Interval(60000) // 每分钟扫描
     async dispatch() {
         const configs = await this.taskService.getSyncApiTasks();
-        this.logger.log('dispatch sync api tasks');
         const now = Date.now();
         for (const c of configs) {
             const lastRun = c.lastRunTime?.getTime() ?? 0;

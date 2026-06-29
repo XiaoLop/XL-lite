@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 // 全局守卫
 import { GlobalGuard } from 'common/guards/global.guard';
@@ -20,7 +21,9 @@ import { MenuModule } from './modules/base/menu/menu.module';
 import { AuthModule } from './modules/base/auth/auth.module';
 import { TasksModule } from 'modules/base/tasks/tasks.module';
 import { CaptchaModule } from './modules/base/captcha/captcha.module';
+import { FilesModule } from 'modules/base/files/files.module';
 import { SeedModule } from './seed/seed.module';
+import { getUploadPath } from 'common/utils/upload';
 
 @Module({
     imports: [
@@ -51,6 +54,11 @@ import { SeedModule } from './seed/seed.module';
             },
         }),
 
+        // 配置静态资源
+        ServeStaticModule.forRoot({
+            rootPath: getUploadPath(),
+        }),
+
         ScheduleModule.forRoot(),
 
         JwtModule.register({
@@ -65,6 +73,7 @@ import { SeedModule } from './seed/seed.module';
         PermissionModule,
         SeedModule,
         CaptchaModule,
+        FilesModule,
     ],
     controllers: [AppController],
     providers: [
