@@ -57,6 +57,7 @@ import { getUploadPath } from 'common/utils/upload';
         // 配置静态资源
         ServeStaticModule.forRoot({
             rootPath: getUploadPath(),
+            serveRoot: process.env.UPLOAD_BASE_PATH,
         }),
 
         ScheduleModule.forRoot(),

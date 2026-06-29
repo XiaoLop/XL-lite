@@ -13,6 +13,11 @@ export default defineConfig(async () => {
             target: 'http://localhost:3000/api',
             ws: true,
           },
+          '/uploads': {
+            changeOrigin: true,
+            // mock代理目标地址
+            target: 'http://localhost:3000'
+          },
         },
       },
     },

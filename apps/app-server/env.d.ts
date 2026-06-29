@@ -37,7 +37,9 @@ declare global {
             // 密钥配置
             HASH_KEY: string; // 用于密码加密的密钥
 
-            UPLOAD_PATH: string;
+            // upload
+            UPLOAD_CACHE_PATH: string;
+            UPLOAD_BASE_PATH: string;
 
             // 超级管理员配置
             SUPER_ADMIN_CODE: string; // 超级管理员的权限标识

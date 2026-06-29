@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { relative, sep } from 'node:path';
+import { relative, sep, join } from 'node:path';
 import { getUploadPath } from 'common/utils/upload';
 import { FileUploadResultDto } from './dto/file-upload-result.dto';
 
@@ -11,17 +11,17 @@ export class FilesService {
             throw new BadRequestException('请上传文件');
         }
 
-        console.log(file);
-
         // 构造可访问的 URL（相对 ServeStatic 的 rootPath，用 / 拼接）
-        const relativePath = relative(getUploadPath(), file.path)
+        const relativePath = join(
+            process.env.UPLOAD_BASE_PATH,
+            relative(getUploadPath(), file.path),
+        )
             .split(sep)
             .join('/');
-        const url = `/${relativePath}`;
 
         // 返回精简的响应数据
         return {
-            url,
+            url: relativePath,
             originalname: file.originalname,
             filename: file.filename,
             size: file.size,
