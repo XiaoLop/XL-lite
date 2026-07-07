@@ -31,36 +31,30 @@ export class AuthGuard implements CanActivate {
         // 获取请求中的 token
         const request = context.switchToHttp().getRequest<Request>();
         const authHeader = request.headers['authorization'] as string;
-        if (!authHeader) return false;
+        if (!authHeader) {
+            throw new HttpException(
+                'Authorization header is missing',
+                HttpStatus.UNAUTHORIZED,
+            );
+        }
 
         const token = authHeader.split(' ')[1];
-        if (!token) return false;
+        if (!token) {
+            throw new HttpException(
+                'Token is missing',
+                HttpStatus.UNAUTHORIZED,
+            );
+        }
         try {
             const payload = this.jwtService.verify<AccessJwtPayload>(token);
             request.user = payload;
             return true;
         } catch (error) {
-            if (error instanceof Error) {
-                switch (error.message) {
-                    case 'jwt expired':
-                        throw new HttpException(
-                            {
-                                message: 'accessToken expired',
-                                data: null,
-                            },
-                            HttpStatus.UNAUTHORIZED,
-                        );
-                    case 'invalid token':
-                        throw new HttpException(
-                            {
-                                message: 'invalid accessToken',
-                                data: null,
-                            },
-                            HttpStatus.UNAUTHORIZED,
-                        );
-                }
-            }
-            return false;
+            this.logger.error('Token verification failed', error);
+            throw new HttpException(
+                'Invalid or expired token',
+                HttpStatus.UNAUTHORIZED,
+            );
         }
     }
 }
