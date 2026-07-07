@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RoleService } from '../role/role.service';
-import { hashPassword } from 'common/utils/password';
+import { comparePassword, hashPassword } from 'common/utils/password';
 import { UserStatus } from './types/user.type';
 import type { UserInfoDto } from './dto/user-info.dto';
 
@@ -134,5 +136,37 @@ export class UserService {
 
     remove(id: number) {
         return this.userRepo.delete(id);
+    }
+
+    // 更新个人基本信息
+    async updateProfile(userId: number, dto: UpdateProfileDto): Promise<UserInfoDto> {
+        await this.userRepo.update(userId, dto);
+        return this.getUserInfo(userId);
+    }
+
+    // 修改密码
+    async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {
+        const user = await this.userRepo.findOne({
+            where: { id: userId },
+            select: ['id', 'password'],
+        });
+
+        if (!user) {
+            throw new BadRequestException('用户不存在');
+        }
+
+        const isMatch = await comparePassword(dto.oldPassword, user.password);
+        if (!isMatch) {
+            throw new BadRequestException('旧密码不正确');
+        }
+
+        const newHashedPassword = await hashPassword(dto.newPassword);
+        await this.userRepo.update(userId, { password: newHashedPassword });
+    }
+
+    // 更新头像
+    async updateAvatar(userId: number, avatar: string): Promise<UserInfoDto> {
+        await this.userRepo.update(userId, { avatar });
+        return this.getUserInfo(userId);
     }
 }

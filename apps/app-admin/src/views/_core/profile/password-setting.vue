@@ -6,6 +6,7 @@ import { computed } from 'vue';
 import { ProfilePasswordSetting, z } from '@vben/common-ui';
 
 import { message } from '#/adapter/tdesign';
+import { changePasswordApi } from '#/api';
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
@@ -50,8 +51,12 @@ const formSchema = computed((): VbenFormSchema[] => {
   ];
 });
 
-function handleSubmit() {
-  message.success('密码修改成功');
+async function handleSubmit(values: Record<string, any>) {
+  await changePasswordApi({
+    oldPassword: values.oldPassword,
+    newPassword: values.newPassword,
+  });
+  message.success('密码修改成功，请重新登录');
 }
 </script>
 <template>
