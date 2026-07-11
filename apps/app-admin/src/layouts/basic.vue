@@ -126,6 +126,18 @@ const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
 
+const userName = computed(() => {
+  return userStore.userInfo?.realName || userStore.userInfo?.username || '';
+});
+
+const userEmail = computed(() => {
+  return userStore.userInfo?.email || userStore.userInfo?.desc || '';
+});
+
+const userTagText = computed(() => {
+  return userStore.userInfo?.roles?.[0] || 'User';
+});
+
 async function handleLogout() {
   await authStore.logout(false);
 }
@@ -222,9 +234,9 @@ watch(
       <UserDropdown
         :avatar
         :menus
-        :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
-        tag-text="Pro"
+        :text="userName"
+        :description="userEmail"
+        :tag-text="userTagText"
         @logout="handleLogout"
         @clear-preferences-and-logout="handleLogout"
       />

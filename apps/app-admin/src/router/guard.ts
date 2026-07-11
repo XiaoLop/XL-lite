@@ -59,6 +59,23 @@ function setupAccessGuard(router: Router) {
             preferences.app.defaultHomePath,
         );
       }
+
+      // 个人中心等已登录后的基础页面也需要先初始化菜单，避免刷新后布局菜单为空
+      if (accessStore.accessToken && !accessStore.isAccessChecked) {
+        const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
+        const userRoles = userInfo.roles ?? [];
+
+        const { accessibleMenus, accessibleRoutes } = await generateAccess({
+          roles: userRoles,
+          router,
+          routes: accessRoutes,
+        });
+
+        accessStore.setAccessMenus(accessibleMenus);
+        accessStore.setAccessRoutes(accessibleRoutes);
+        accessStore.setIsAccessChecked(true);
+      }
+
       return true;
     }
 
