@@ -1,0 +1,20 @@
+{
+	"servers": {
+		"API 文档": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"apifox-mcp-server@latest",
+				"--oas=http://localhost:3000/doc/json"
+			],
+		},
+		"tdesign-mcp-server": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"tdesign-mcp-server@latest"
+			]
+		}
+	},
+	"inputs": []
+}
